@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link href="{% static 'appetd/css/tabelas.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    {% block caption %}CADASTRO DE TABELAS{% endblock %}
+    <main>
+        <div>
+            <table>
+                <thead>
+                    <tr class="active">
+                        <th class="lg-id">id</th>
+                        <th class="lg-nome">Nome</th>
+                        <th class="lg-descricao">Descrição</th>
+                        <th class="lg-buttom"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="lg-id">001</td>
+                        <td class="lg-nome">CARGA_PESSOAS</td>
+                        <td class="lg-descricao">Cadastro de Pessoas</td>
+                        <td class="lg-buttom">
+                            <button class="btn-incluir" type="button" data-bs-toggle="modal" data-bs-target="#form-insert">Incluir</button>
+                            <!--<button class="btn-incluir"  type="submit">Incluir</button>-->
+                            <button class="btn-editar"  type="submit">Editar</button>
+                            <button class="btn-excluir" type="submit">Excluir</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lg-id">002</td>
+                        <td>CARGA_CLIENTES</td>
+                        <td>Cadastro de Clentes</td>
+                        <td class="lg-buttom">
+                            <button class="btn-incluir"  type="submit">Incluir</button>
+                            <button class="btn-editar"  type="submit">Editar</button>
+                            <button class="btn-excluir" type="submit">Excluir</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lg-id">003</td>
+                        <td>CARGA_PESSOASCADASTRO</td>
+                        <td>Cadastro de Pessoas Dados Financeiro</td>
+                        <td class="lg-buttom">
+                            <button class="btn-incluir"  type="submit">Incluir</button>
+                            <button class="btn-editar"  type="submit">Editar</button>
+                            <button class="btn-excluir" type="submit">Excluir</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lg-id">004</td>
+                        <td>CARGA_REPRESENTANTES</td>
+                        <td>Cadastro de Representantes</td>
+                        <td class="lg-buttom">
+                            <button class="btn-incluir"  type="submit">Incluir</button>
+                            <button class="btn-editar"  type="submit">Editar</button>
+                            <button class="btn-excluir" type="submit">Excluir</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lg-id">005</td>
+                        <td>CARGA_EMPRESAS</td>
+                        <td>Cadastro de Empresas</td>
+                        <td class="lg-buttom">
+                            <button class="btn-incluir"  type="submit">Incluir</button>
+                            <button class="btn-editar"  type="submit">Editar</button>
+                            <button class="btn-excluir" type="submit">Excluir</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lg-id">006</td>
+                        <td>CARGA_EMPRESAS</td>
+                        <td>Cadastro de Empresas</td>
+                        <td class="lg-buttom">
+                            <button class="btn-incluir"  type="submit">Incluir</button>
+                            <button class="btn-editar"  type="submit">Editar</button>
+                            <button class="btn-excluir" type="submit">Excluir</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lg-id">007</td>
+                        <td>CARGA_EMPRESAS</td>
+                        <td>Cadastro de Empresas</td>
+                        <td class="lg-buttom">
+                            <button class="btn-incluir"  type="submit">Incluir</button>
+                            <button class="btn-editar"  type="submit">Editar</button>
+                            <button class="btn-excluir" type="submit">Excluir</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lg-id">008</td>
+                        <td>CARGA_EMPRESAS</td>
+                        <td>Cadastro de Empresas</td>
+                        <td class="lg-buttom">
+                            <button class="btn-incluir"  type="submit">Incluir</button>
+                            <button class="btn-editar"  type="submit">Editar</button>
+                            <button class="btn-excluir" type="submit">Excluir</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lg-id">009</td>
+                        <td>CARGA_EMPRESAS</td>
+                        <td>Cadastro de Empresas</td>
+                        <td class="lg-buttom">
+                            <button class="btn-incluir"  type="submit">Incluir</button>
+                            <button class="btn-editar"  type="submit">Editar</button>
+                            <button class="btn-excluir" type="submit">Excluir</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="lg-id">010</td>
+                        <td>CARGA_EMPRESAS</td>
+                        <td>Cadastro de Empresas</td>
+                        <td class="lg-buttom">
+                            <button class="btn-incluir" type="submit">Incluir</button>
+                            <button class="btn-editar"  type="submit">Editar</button>
+                            <button class="btn-excluir" type="submit">Excluir</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+
+    <script src="{% static 'appetd/js/tabelas.js' %}"></script>
+
+
+    <div class="modal fade" id="form-insert" tabindex="-1" aria-labelledby="Modal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="Modal"> Titulo </h1>
+                    <button class="btn-close"  type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="form control modal-body">
+                    <form action="#" method="POST">
+                        <div class="mb-3">
+                            <label class="col-form-label" for="banco-codigo"> Código: </label>
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    id="banco-codigo"
+                                    name="codigo"
+                                    maxlength="3"
+                                    onkeypress="return SomenteNumero()"
+                                    required
+                            >
+                        </div>
+                        <div class="mb-3">
+                            <label class="col-form-label" for="banco-descricao"> Descrição: </label>
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    id="banco-descricao"
+                                    name="descricao"
+                                    maxlength="30"
+                                    required
+                            >
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal"> Cancelar </button>
+                            <button class="btn btn-primary" type="submit" onclick="ValidarCampos()"> Salvar </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

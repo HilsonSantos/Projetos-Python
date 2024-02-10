@@ -1,0 +1,65 @@
+section {
+    margin: 0 auto;
+    padding: auto;
+    height: auto;
+}
+
+.header-div01 {
+    text-align: center;
+    margin: 1%;
+    padding: 1%;
+    border-radius: 15px 15px 15px 15px;
+}
+
+.section-table {
+    text-align: center;
+    height: auto;
+    width: auto;
+    padding: auto;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+thead {
+    display: block;
+    padding: 5px;
+}
+
+tbody {
+    display: block;
+    overflow-y: scroll;
+    height: 400px;
+    padding: 5px;
+}
+
+.th-col1 {
+    width: 5%;
+    text-align: center;
+}
+
+.th-col2 {
+    width: 10%;
+    text-align: center;
+}
+
+.th-col3 {
+    width: 1060px;
+    text-align: left;
+    margin: 0 auto;
+}
+
+.td-col1 {
+    width: 5%;
+    text-align: center;
+}
+
+.td-col2 {
+    width: 10%;
+    text-align: center;
+}
+
+.td-col3 {
+    width:1060px;
+    text-align: left;
+    margin: 0 auto;
+}

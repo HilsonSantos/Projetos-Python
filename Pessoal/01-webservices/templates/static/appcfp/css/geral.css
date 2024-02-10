@@ -1,0 +1,120 @@
+/**/
+html {
+    font-family: "DM Sans", sans-serif;
+    font-size: 1.0rem;
+}
+/**/
+body {
+    background: #000000;
+    overflow: hidden; /* Evita rolagem da página horizontalmente */
+}
+/**/
+header {
+    background-color: #000000;
+    display: flex;
+    position: fixed;
+    top: 0;
+    height: 15vh;
+    width: 100%;
+    /* ESTILO DA BARRA SUPERIOR */
+    .div-nav {
+        background-color: #99999920;
+        display: flex;
+        justity-content: center;
+        align-items: center;
+        height: 65px;
+        width: 98%;
+        margin: 1%;
+        border-radius: 10px;
+        z-index: 0; /* Faz com que a imagem fique por trás */
+        /* IMAGEM */
+        img {
+            width: 60px;
+            text-align: 50%;
+            padding: 5px;
+        }
+        /* TITULO */
+        span {
+            font-weight: bold;
+            color: #ffffff;
+            margin: 10px;
+        }
+        /* BOTÃO FECHAR */
+        .fa-solid {
+            position: fixed;
+            right: 1%;
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        /* AO SELECIONAR O BOTÃO FECHAR */
+        .fa-solid:hover {
+            cursor: pointer;
+            transform: scale(1.1, 1.1)
+        }
+    }
+}
+/**/
+section {
+    background-color: #000000;
+    display: flex;
+    flex-direction: row;
+    justity-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    height: 90vh;
+    width: 100%;
+    .div-section {
+        background-color: #99999920;
+        display: flex;
+        flex-direction: row;
+        height: 98%;
+        width: 98%;
+        margin-left: 1%;
+        border-radius: 10px;
+        z-index: 0; /* Faz com que a imagem fique por trás */
+    }
+}
+
+/*
+table {
+    width: 96%;
+    height: auto;
+    display: block;
+    border: 1px solid;
+    color: #ffffff;
+    top: 0;
+    padding: 2%;
+    margin: 2%;
+    .col-codigo {
+        width: 5vw;
+        text-align: center;
+    }
+    .col-inscricao {
+        width: 10vw;
+        text-align: center;
+    }
+    .col-nome {
+        width: 85vw;
+        text-align: left;
+    }
+    th,
+    td {
+        padding: 5px 10px;
+        border-top-width: 0;
+        border-left-width: 0;
+    }
+    th {
+        position: sticky;
+        top: 0;
+        background-color: #363636;
+        color: #ffffff;
+        vertical-align: bottom;
+    }
+    tr:hover {
+        background-color: #363636;
+        cursor: pointer;
+    }
+}
+*/

@@ -1,0 +1,93 @@
+.register-items {
+    background-color: #00000090;
+    display: flex;
+    justity-content: center;
+    align-items: center;
+    height: 84%;
+    width: 25%;
+    border-radius: 10px;
+    color: #000000;
+    position: fixed;
+    top: 13%;
+    left: 2%;
+
+}
+.list-items {
+    background-color: #00000090;
+    display: flex;
+    justity-content: center;
+    align-items: center;
+    height: 84%;
+    width: 70%;
+    border-radius: 10px;
+    color: #000000;
+    position: fixed;
+    top: 13%;
+    left: 28%;
+
+}
+/*
+.header-div01 {
+    text-align: center;
+    border-radius: 15px 15px 15px 15px;
+    margin: 5px;
+}
+section {
+    margin: 0 auto;
+    padding: auto;
+    height: auto;
+}
+
+.section-table {
+    text-align: center;
+    height: auto;
+    width: auto;
+    padding: auto;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+thead {
+    display: block;
+    padding: 5px;
+}
+
+tbody {
+    display: block;
+    overflow-y: scroll;
+    height: 400px;
+    padding: 5px;
+}
+
+.th-col1 {
+    width: 5%;
+    text-align: center;
+}
+
+.th-col2 {
+    width: 10%;
+    text-align: center;
+}
+
+.th-col3 {
+    width: 1060px;
+    text-align: left;
+    margin: 0 auto;
+}
+
+.td-col1 {
+    width: 5%;
+    text-align: center;
+}
+
+.td-col2 {
+    width: 10%;
+    text-align: center;
+}
+
+.td-col3 {
+    width:1060px;
+    text-align: left;
+    margin: 0 auto;
+}
+*/

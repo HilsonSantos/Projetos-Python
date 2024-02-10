@@ -1,0 +1,107 @@
+<!doctype html>
+{% load static %}
+<html lang="pt-BR">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>APPCFPv2023.0.1.26</title>
+        <link rel="shortcut icon" href="{% static 'appcfp/img/logo-sistema-100x100.png' %}" type="image/x-icon">
+        <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'fontawesomefree/css/all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'appcfp/css/geral.css' %}">
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+    {% block body %}
+        <header>
+            {% block header %}
+            <div class="div-header">
+                <img src="{% static 'appcfp/img/logo-sistema-100x100.png' %}" alt="">
+                <span>
+                    CONTROLE FINANCEIRO PESSOAL
+                    &nbsp;&#129094;
+                    {% block caption %}{% endblock %}
+                </span>
+                <span class="fa-solid fa-square-xmark">
+                    {% block bottom %}{% endblock %}
+                </span>
+            </div>
+            {% endblock %}
+        </header>
+        <section>
+            {% block section %}
+                <div class="div-section"></div>
+            {% endblock %}
+        </section>
+    {% endblock %}
+    </body>
+</html>
+        <!--
+        <section>
+            {% block table %}
+            <table>
+              <thead>
+                <tr>
+                  <th class="col-codigo">Código</th>
+                  <th class="col-inscricao">inscrição CNPJ/CPF</th>
+                  <th class="col-nome">Nome</th>
+                </tr>
+              </thead
+              <tbody>
+                <tr>
+                  <td class="col-codigo">000001</td>
+                  <td class="col-inscricao">00000000000000</td>
+                  <td class="col-nome">CLIENTE FULANDO DE TAL 000001</td>
+                </tr>
+                <tr>
+                  <td class="col-codigo">000002</td>
+                  <td class="col-inscricao">00000000000000</td>
+                  <td class="col-nome">CLIENTE FULANDO DE TAL 000002</td>
+                </tr>
+                <tr>
+                  <td class="col-codigo">000003</td>
+                  <td class="col-inscricao">00000000000000</td>
+                  <td class="col-nome">CLIENTE FULANDO DE TAL 000003</td>
+                </tr>
+                <tr>
+                  <td class="col-codigo">000004</td>
+                  <td class="col-inscricao">00000000000000</td>
+                  <td class="col-nome">CLIENTE FULANDO DE TAL 000004</td>
+                </tr>
+                <tr>
+                  <td class="col-codigo">000005</td>
+                  <td class="col-inscricao">00000000000000</td>
+                  <td class="col-nome">CLIENTE FULANDO DE TAL 000005</td>
+                </tr>
+                <tr>
+                  <td class="col-codigo">000006</td>
+                  <td class="col-inscricao">00000000000000</td>
+                  <td class="col-nome">CLIENTE FULANDO DE TAL 000006</td>
+                </tr>
+                <tr>
+                  <td class="col-codigo">000007</td>
+                  <td class="col-inscricao">00000000000000</td>
+                  <td class="col-nome">CLIENTE FULANDO DE TAL 000007</td>
+                </tr>
+                <tr>
+                  <td class="col-codigo">000008</td>
+                  <td class="col-inscricao">00000000000000</td>
+                  <td class="col-nome">CLIENTE FULANDO DE TAL 000008</td>
+                </tr>
+                <tr>
+                  <td class="col-codigo">000009</td>
+                  <td class="col-inscricao">00000000000000</td>
+                  <td class="col-nome">CLIENTE FULANDO DE TAL 000009</td>
+                </tr>
+                <tr>
+                  <td class="col-codigo">000010</td>
+                  <td class="col-inscricao">00000000000000</td>
+                  <td class="col-nome">CLIENTE FULANDO DE TAL 000010</td>
+                </tr>
+              </tbody>
+            </table>
+            {% endblock %}
+        </section>
+        -->

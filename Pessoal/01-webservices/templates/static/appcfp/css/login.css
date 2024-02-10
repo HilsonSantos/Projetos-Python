@@ -1,0 +1,172 @@
+/* COLUNA DA ESQUERDA */
+.div-container-left {
+    background-color: #000000;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    height: 100vh;
+    width: 40vw;
+    top: 0;
+    float: left;
+    /* VISUAL DO LOGIN */
+    .div-login {
+        background-color: #00000070;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        border-radius: 15px;
+        height: 80vh;
+        width: 30vw;
+        border: 1px solid #ffffff40;
+        /**/
+        .div-form {
+            height: auto;
+            width: auto;
+            /* IMAGEM DO LOGIN */
+            .div-login-image {
+                height: auto;
+                width: auto;
+                img {
+                    width: 50%;
+                    height: auto;
+                }
+            }
+            /* TITULO DO ACESSO LOGIN */
+            p {
+                font-size: 1.8rem;
+                font-weight: bold;
+                color: #999999;
+            }
+            /* IMPUT DO USUÁRIO E SENHA */
+            div.mb-3 {
+                width: auto;
+            }
+             /* BOTÃO ACESSAR */
+            button {
+                background-color: #008000;
+                font-size: 1.2rem;
+                color: #ffffff;
+                border: none;
+                border-radius: 10px;
+                height: 150%;
+                text-align: center;
+                margin: 2%;
+            }
+            /* AO COLOCAR O MOUSE NO BOTÃO */
+            button:hover {
+                background-color: #006400;
+                transform: scale(1.1, 1.1);
+            }
+            /**/
+            a {
+                font-size: 0.8rem;
+                color: #999999;
+                text-align: center;
+                margin-top: 20%;
+                cursor: pointer;
+            }
+            /* AO COLOCAR O MOUSE NO BOTÃO */
+            a:hover {
+                color: #ffffff;
+                transform: scale(1.1, 1.1);
+            }
+        }
+    }
+}
+/* COLULA DA DIREITA */
+.div-container-right {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    height: 100vh;
+    width: 60vw;
+    top: 0;
+    float: right;
+    /* DIV DA IMAGEM E TEXTO DO SISTEMA */
+    .div-image-empresa {
+        text-align: center;
+        width: 100%;
+        /* IMAGEM */
+        .image-empresa {
+            width: 50%;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0px 0px 200px #999999;
+        }
+        /* TEXTO */
+        p {
+            font-family: arial;
+            font-size: 2.4rem;
+            font-weight: bold;
+            color: #999999;
+            margin: 2%;
+        }
+    }
+}
+/* FORMULÁRIO MODAL */
+.div-modal {
+    background-color: #36363670;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* CONTEÚDO */
+    .div-modal-content {
+        background-color: #ffffff;
+        margin: 15% auto;
+        border-radius: 15px;
+        width: 40%;
+        height: 40vh;
+        border: 2px solid #36363690;
+        box-shadow: 0 0 10px #ffffff;
+        /* BARRA DE TITULO */
+        .div-title {
+            background-color: #40404020;
+            height: 50px;
+            width: auto;
+            border-radius: 10px 10px 0 0;
+            /* DESCRIÇÃO */
+            .title {
+                font-size: 1.8rem;
+                float: left;
+                padding-left: 10px;
+                color: #000000;
+            }
+            /* BOTÃO */
+            span {
+                color: #000000;
+                font-size: 1.8rem;
+                font-weight: bold;
+                float: right;
+                padding: 0 15px 0 15px;
+                cursor: pointer;
+            }
+            /* AO COLOCAR O MOUSE NO BOTÃO */
+            span:hover {
+                transform: scale(1.3, 1.3)
+            }
+        }
+        /* DIV DA MENSAGEM */
+        .div-message {
+            display: block;
+            text-align: center;
+            margin-top: 15%;
+            font-size: 1.4rem;
+            /* ICONE */
+            .fa-solid {
+                 color: #ffa500;
+                 font-size: 2.5rem;
+            }
+            /* MENSAGEM */
+            .span-message {
+                font-size: 1.8rem;
+                padding: 10px;
+            }
+        }
+    }
+}

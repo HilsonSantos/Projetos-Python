@@ -1,0 +1,128 @@
+/* COLUNA DA ESQUERDA */
+.div-container-e {
+    background-color: #f5be34;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+    width: 35vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* IMAGEM DO SISTEMA */
+    .img-logo-sistema {
+        width: 40%;
+        height: auto;
+    }
+    /* TEXTO "Acesso ao Sistema" */
+    p {
+        color: #222c66;
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 5px #363636;
+    }
+    /**/
+    .form-floating {
+        margin: 0% 10% 2% 10%;
+    }
+    /* BOTÃO ENVIAR */
+    button {
+        background-color: #222c66;
+        font-weight: bold;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        height: 8vh;
+        width: 30%;
+        margin-top: 5%;
+    }
+    /* AO COLOCAR O MOUSE NO BOTÃO */
+    button:hover {
+        background-color: #494f81;
+        transform: scale(1.1, 1.1);
+    }
+}
+/* COLUNA DA DIREITA */
+.div-container-d {
+    background-color: #fddc80;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+    width: 65vw;
+    position: fixed;
+    top: 0;
+    right: 0;
+    /* IMAGEM DA LOGO DA EMPRESA */
+    .img-logo-empresa {
+        width: 70%;
+    }
+}
+/* FORMULÁRIO MODAL */
+.div-modal {
+    background-color: #f5be3480;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    /* CONTEÚDO DO FORMULÁRIO */
+    .div-modal-content {
+        background-color: #fddc80;
+        margin: 15% auto;
+        border-radius: 15px;
+        width: 40%;
+        height: 40vh;
+        border: 2px solid #222c66;
+        box-shadow: 0 0 5px #f5be34;
+        /* BARRA DO FORMULÁRIO */
+        .div-title {
+            background-color: #222c66;
+            height: 50px;
+            width: auto;
+            border-radius: 10px 10px 0 0;
+            /* TITULO */
+            .title {
+                color: #ffffff;
+                font-size: 1.2rem;
+                float: left;
+                padding: 10px;
+            }
+            /* BOTÃO FECHAR */
+            span {
+                color: #ffffff;
+                font-size: 1.8rem;
+                font-weight: bold;
+                float: right;
+                padding: 0 15px 0 15px;
+                cursor: pointer;
+            }
+            /* AO COLOCAR O MOUSE NO BOTÃO */
+            span:hover {
+                transform: scale(1.1, 1.1)
+            }
+        }
+        /* CONTEÚDO DA MENSAGEM */
+        .div-message {
+            height: 50px;
+            width: 100%;
+            margin: 12% 0;
+            text-align: center;
+            /* ICONE */
+            .fa-solid {
+                color: #222c66;
+                font-size: 2.5rem;
+                padding: 5px;
+            }
+            /* TEXTO */
+            .span-message {
+                font-size: 1.3rem;
+                font-weight: 600;
+            }
+        }
+    }
+}

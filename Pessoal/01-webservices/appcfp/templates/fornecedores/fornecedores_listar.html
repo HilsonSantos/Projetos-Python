@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link href="{% static 'css/cadastro.banco.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+    {% block menu %}{% endblock %}
+    {% block header %}
+        <header>
+            <div class="header-div01">
+                <nav class="container-xxl bd-gutter flex-wrap flex-lg-nowrap" aria-label="Main navigation" style="width: auto;">
+                    <div class="bd-navbar-toggle">
+                        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                            <div class="container-fluid">
+                                <div class="navbar-brand"> Cadastro de Bancos </div>
+                                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                        <li class="nav-item">
+                                            <a class="nav-link"
+                                               id="mincluir"
+                                               href="#"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#form-insert"
+                                               onclick="#"
+                                            > Incluir </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link"
+                                               id="malterar"
+                                               href="#"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#form-update"
+                                               onclick="#"
+                                            > Alterar </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link"
+                                               id="mexcluir"
+                                               href="#"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#form-delete"
+                                            > Excluir </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link"
+                                               href="#"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#form-close"
+                                            > Sair </a>
+                                        </li>
+                                    </ul>
+                                    <form class="d-flex" role="search" action="#">
+                                        <input class="form-control me-2" type="search" placeholder="Filtrar" aria-label="Filtar">
+                                        <button class="btn btn-outline-success" type="submit"> Filtrar </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </nav>
+            </div>
+        </header>
+    {% endblock %}
+
+    {% block section %}
+        <section>
+            <table class="table table-dark table-hover section-table">
+                <thead>
+                    <tr>
+                        <td> <input class="form-check-input" type="checkbox" value=""></td>
+                        <th class="th-col1"> Id </th>
+                        <th class="th-col2"> Código </th>
+                        <th class="th-col3"> Descrição </th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                    {% for r in dados %}
+                        <tr id="{{r.id}}">
+                            <td> <input class="form-check-input" type="checkbox" value=""></td>
+                            <td class="td-col1"> {{r.id}} </td>
+                            <td class="td-col2"> {{r.codigo}} </td>
+                            <td class="td-col3"> {{r.descricao}} </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <footer>
+            <div id="totalreg" style="height: auto; margin-left: 2%; font: normal 20pt Atial">
+                Quantidade de bancos cadastrados:
+            </div>
+        </footer>
+
+        <div class="modal fade" id="form-insert" tabindex="-1" aria-labelledby="Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="Modal"> Titulo </h1>
+                        <button class="btn-close"  type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="form control modal-body">
+                        <form action="#" method="POST">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label class="col-form-label" for="banco-codigo"> Código: </label>
+                                <input
+                                        class="form-control"
+                                        type="text"
+                                        id="banco-codigo"
+                                        name="codigo"
+                                        maxlength="3"
+                                        onkeypress="return SomenteNumero()"
+                                        required
+                                >
+                            </div>
+                            <div class="mb-3">
+                                <label class="col-form-label" for="banco-descricao"> Descrição: </label>
+                                <input
+                                        class="form-control"
+                                        type="text"
+                                        id="banco-descricao"
+                                        name="descricao"
+                                        maxlength="30"
+                                        required
+                                >
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal"> Cancelar </button>
+                                <button class="btn btn-primary" type="submit" onclick="ValidarCampos()"> Salvar </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="{% static 'js/cadastro.banco.js' %}"></script>
+    {% endblock %}
+{% endblock %}

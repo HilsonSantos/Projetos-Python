@@ -1,0 +1,93 @@
+header {
+    nav {
+        background-color: #FFFFFF;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #222C66;
+            img {
+                float: left;
+                height: 40px;
+                width: auto;
+                margin-left: 4px;
+                margin-top: 4px;
+                display: inline;
+            }
+            li {
+                display: inline;
+                float: left;
+                li:last-child {
+                    border-right: none;
+                }
+                a {
+                    display: block;
+                    color: #FFFFFF;
+                    font-weight: normal;
+                    text-align: center;
+                    padding: 14px 16px;
+                    text-decoration: none;
+                    width: 150px;
+                    a:hover:not(.active) {
+                        background-color: #fCCE4D;
+                        color: #000000;
+                    }
+                }
+            }
+        }
+    }
+}
+.active {
+    background-color: #222C66;
+    color: #FFFFFF;
+    font-weight: bold;
+    cursor: none;
+    width: auto;
+}
+.help-li {
+    float: right;
+}
+.help-a {
+    width: 120px;
+}
+main {
+    background-color: #fCCE4D;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 100vh;
+    figure {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        p {
+            color: #222C66;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-shadow: 3px 3px 4px #363636;
+        }
+    }
+}
+.footer-div {
+    background-color: #222C66;
+    display: flex;
+    align-items: center;
+    color: #FFFFFF;
+    height: 5vh;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    .informacao {
+        position:= fixed;
+        margin-left: 1%;
+    }
+    .data-hora {
+        position: fixed;
+        right: 1%;
+    }
+}

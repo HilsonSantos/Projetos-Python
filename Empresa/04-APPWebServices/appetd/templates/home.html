@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link href="{% static 'appetd/css/home.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <header>
+        <nav>
+            <ul>
+                <li><img src="{% static 'img/logo_cadan_100x118.png' %}" alt="Logo do sistema"></li>
+                <li><a class="active">CADAN DISTRIBUIÇÃO</a></li>
+                <li><a href="{% url 'tabelas-lista' %}">Criar Tabelas</a></li>
+                <li><a href="{% url 'selects-lista' %}">Criar Select's</a></li>
+                <li><a href="{% url 'configuracoes' %}">Configurações</a></li>
+                <li><a href="#">Ajuda</a></li>
+                <li class="help-li"><a class="help-a" href="{% url 'logoff' %}">&#128275; Fechar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <figure>
+            <img src="{% static 'appetd/img/etl_200x200.png' %}">
+            <p>EXTRAÇÃO, TRANSFORMAÇÃO E VISUALIZAÇÃO DE DADOS</p>
+        </figure>
+    </main>
+
+    <footer>
+        <div class="footer-div">
+            <li class="informacao">&copy;2023 Cadan Distribuição. Todos direitos reservados</li>
+            <li class="data-hora" id="data-hora"><strong>Data/Hora: </strong>00/00/0000 00:00:00</li>
+        </div>
+    </footer>
+    {% block javascript %}
+        <script src="{% static 'appetd/js/home.js' %}"></script>
+    {% endblock %}
+{% endblock %}

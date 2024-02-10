@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'appcfp/css/home.css' %}">
+{% endblock %}
+
+{% block body %}
+    {% block header %}{% endblock %}
+    <!-- DIV ONDE CHAMA A IMAGEM -->
+    <div class="div-imagem-central">
+        <img src="{% static 'appcfp/img/logo-empresa-1200x800.png' %}" alt="Logo da empresa">
+    </div>
+    <!-- BARRA DE SUPERIOR ONDE FICA OS MENUS -->
+    <nav>
+        <div class="div-nav">
+            <img src="{% static 'appcfp/img/logo-sistema-100x100.png' %}" alt="">
+            <span>CONTROLE FINANCEIRO PESSOAL</span>
+
+            <div class="div-menu">
+                <a class="a-submenu">Cadastros</a>
+                <div class="div-submenu-itens">
+                    <a href="{% url 'clientes-listar' %}">Clientes</a>
+                    <a href="#">Fornecedores</a>
+                    <a href="#">Bancos</a>
+                    <a href="#">Contas Bancárias</a>
+                    <a href="#">Bandeiras de Cartões de Créditos</a>
+                    <a href="#">Cartões de Créditos</a>
+                    <a href="#">Plano de Contas</a>
+                </div>
+            </div>
+
+            <div class="div-menu">
+                <a class="a-submenu">Lançamentos</a>
+                <div class="div-submenu-itens">
+                    <a href="#">Contas à Receber</a>
+                    <a href="#">Contas à Pagar</a>
+                    <a href="#">Extratos Bancários</a>
+                    <a href="#">Cartões de Créditos</a>
+                </div>
+            </div>
+
+            <div class="div-menu">
+                <a class="a-submenu">Relatórios</a>
+                <div class="div-submenu-itens">
+                    <a href="#">Relatório 1</a>
+                    <a href="#">Relatório 2</a>
+                    <a href="#">Relatório 3</a>
+                    <a href="#">Relatório 4</a>
+                    <a href="#">Relatório 5</a>
+                    <a href="#">Relatório 6</a>
+                    <a href="#">Relatório 7</a>
+                    <a href="#">Relatório 8</a>
+                    <a href="#">Relatório 9</a>
+                </div>
+            </div>
+
+            <div class="div-menu">
+                <a class="a-submenu">Sobre</a>
+            </div>
+
+            <div class="div-menu">
+                <a class="a-submenu">Ajuda</a>
+            </div>
+
+            <div class="div-menu">
+                <a class="a-submenu" href="{% url 'logoff' %}">Sair</a>
+            </div>
+
+        </div>
+    </nav>
+    <!-- BARRA INFERIOR - RODAPÉ -->
+    <footer>
+        <div class="div-footer">
+            <span class="span-left">&copy;2023 Todos direitos reservados. «-» Desenvolvimento: Hilson Santos</span>
+            <span class="span-right" id="data-hora">Data/Hora: 00/00/0000 00:00:00</span>
+        </div>
+    </footer>
+
+    <script src="{% static 'appcfp/js/home.js' %}"></script>
+{% endblock %}
