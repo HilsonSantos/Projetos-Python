@@ -14,94 +14,123 @@
         {% block head %}{% endblock %}
     </head>
     <body>
-    {% block body %}
+        {% block body %}
         <header>
-            {% block header %}
-            <div class="div-header">
+            <nav class="div-nav">
                 <img src="{% static 'appcfp/img/logo-sistema-100x100.png' %}" alt="">
                 <span>
                     CONTROLE FINANCEIRO PESSOAL
                     &nbsp;&#129094;
-                    {% block caption %}{% endblock %}
+                    {% block titulo %}{% endblock %}
                 </span>
                 <span class="fa-solid fa-square-xmark">
-                    {% block bottom %}{% endblock %}
+
                 </span>
-            </div>
-            {% endblock %}
+            </nav>
+            {% block header %}{% endblock %}
         </header>
+        <main>
+            <div class="div-operaction">
+                <div class="div-input-search">
+                    <img src="{% static 'img/search.png' %}" alt="">
+                    <input id="search-input" type="text" maxlength="800" placeholder="Procurar..." />
+                </div>
+                <div class="div-buttons">
+                   <button class="button-operaction">Incluir</button>
+                   <button class="button-operaction">Alterar</button>
+                   <button class="button-operaction">Excluir</button>
+                </div>
+            </div>
+            {% block main %}{% endblock %}
+        </main>
         <section>
-            {% block section %}
-                <div class="div-section"></div>
-            {% endblock %}
+            <div class="div-section">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="col-status"></th>
+                            <th class="col-codigo">Código</th>
+                            <th class="col-inscricao">inscrição CPF/CNPJ</th>
+                            <th class="col-razaosocial">Nome/Razão Social</th>
+                            <th class="col-fantasia">Nome/Fantásia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td class="col-codigo">000001</td>
+                            <td class="col-inscricao">00000000000000</td>
+                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
+                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td class="col-codigo">000002</td>
+                            <td class="col-inscricao">00000000000000</td>
+                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
+                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td class="col-codigo">000003</td>
+                            <td class="col-inscricao">00000000000000</td>
+                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
+                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td class="col-codigo">000004</td>
+                            <td class="col-inscricao">00000000000000</td>
+                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
+                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td class="col-codigo">000005</td>
+                            <td class="col-inscricao">00000000000000</td>
+                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
+                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td class="col-codigo">000006</td>
+                            <td class="col-inscricao">00000000000000</td>
+                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
+                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td class="col-codigo">000007</td>
+                            <td class="col-inscricao">00000000000000</td>
+                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
+                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td class="col-codigo">000008</td>
+                            <td class="col-inscricao">00000000000000</td>
+                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
+                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td class="col-codigo">000009</td>
+                            <td class="col-inscricao">00000000000000</td>
+                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
+                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td class="col-codigo">000010</td>
+                            <td class="col-inscricao">00000000000000</td>
+                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
+                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% block section %}{% endblock %}
         </section>
-    {% endblock %}
+        {% endblock %}
     </body>
 </html>
-        <!--
-        <section>
-            {% block table %}
-            <table>
-              <thead>
-                <tr>
-                  <th class="col-codigo">Código</th>
-                  <th class="col-inscricao">inscrição CNPJ/CPF</th>
-                  <th class="col-nome">Nome</th>
-                </tr>
-              </thead
-              <tbody>
-                <tr>
-                  <td class="col-codigo">000001</td>
-                  <td class="col-inscricao">00000000000000</td>
-                  <td class="col-nome">CLIENTE FULANDO DE TAL 000001</td>
-                </tr>
-                <tr>
-                  <td class="col-codigo">000002</td>
-                  <td class="col-inscricao">00000000000000</td>
-                  <td class="col-nome">CLIENTE FULANDO DE TAL 000002</td>
-                </tr>
-                <tr>
-                  <td class="col-codigo">000003</td>
-                  <td class="col-inscricao">00000000000000</td>
-                  <td class="col-nome">CLIENTE FULANDO DE TAL 000003</td>
-                </tr>
-                <tr>
-                  <td class="col-codigo">000004</td>
-                  <td class="col-inscricao">00000000000000</td>
-                  <td class="col-nome">CLIENTE FULANDO DE TAL 000004</td>
-                </tr>
-                <tr>
-                  <td class="col-codigo">000005</td>
-                  <td class="col-inscricao">00000000000000</td>
-                  <td class="col-nome">CLIENTE FULANDO DE TAL 000005</td>
-                </tr>
-                <tr>
-                  <td class="col-codigo">000006</td>
-                  <td class="col-inscricao">00000000000000</td>
-                  <td class="col-nome">CLIENTE FULANDO DE TAL 000006</td>
-                </tr>
-                <tr>
-                  <td class="col-codigo">000007</td>
-                  <td class="col-inscricao">00000000000000</td>
-                  <td class="col-nome">CLIENTE FULANDO DE TAL 000007</td>
-                </tr>
-                <tr>
-                  <td class="col-codigo">000008</td>
-                  <td class="col-inscricao">00000000000000</td>
-                  <td class="col-nome">CLIENTE FULANDO DE TAL 000008</td>
-                </tr>
-                <tr>
-                  <td class="col-codigo">000009</td>
-                  <td class="col-inscricao">00000000000000</td>
-                  <td class="col-nome">CLIENTE FULANDO DE TAL 000009</td>
-                </tr>
-                <tr>
-                  <td class="col-codigo">000010</td>
-                  <td class="col-inscricao">00000000000000</td>
-                  <td class="col-nome">CLIENTE FULANDO DE TAL 000010</td>
-                </tr>
-              </tbody>
-            </table>
-            {% endblock %}
-        </section>
-        -->
