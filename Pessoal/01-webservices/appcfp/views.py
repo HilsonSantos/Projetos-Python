@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from .models import *
 
 
 def login(request):
@@ -70,5 +71,42 @@ def home(request):
         return render(request, 'login.html', {'enviar': True, 'message': message})
 
 
-def clientes_listar(request):
-    return render(request, 'clientes\clientes_listar.html')
+class CadastroClientes(object):
+    def __init__(self):
+        self.POST = 'POST'
+
+    def view(self):
+        clientes = Clientes.objects.all()
+        dados = {'clientes': clientes}
+        return render(self, 'clientes\clientes_listar.html', dados)
+
+    def insert(self):
+        #
+        cpf_cnpj = self.POST.get('cpf_cnpj')
+        nrazaosocial = self.POST.get('nome_razaosocial')
+        nfantasia = self.POST.get('nome_fantasia')
+        tipo = self.POST.get('tipo')
+        status = self.POST.get('status')
+        #
+        if tipo is None:
+            tipo = 'J'
+        #
+        if status is None:
+            status = 'A'
+        #
+        cliente = Clientes(
+            cpfcnpj=cpf_cnpj,
+            nrazaosocial=nrazaosocial,
+            nfantasia=nfantasia,
+            tipo=tipo,
+            status=status
+        )
+        #
+        cliente.save()
+        return redirect('/clientes/')
+
+    def update(self):
+        pass
+
+    def delete(self):
+        pass

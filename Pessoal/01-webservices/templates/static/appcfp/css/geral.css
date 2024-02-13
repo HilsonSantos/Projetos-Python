@@ -46,6 +46,7 @@ header {
             font-size: 2.2rem;
             font-weight: bold;
             color: #ffffff;
+            text-decoration: none;
         }
         /* EXECUTA QUANDO O MOUSE SELECIONA */
         .fa-solid:hover {
@@ -102,18 +103,20 @@ header {
         margin-left: 2%;
         /* BOTÕES */
         .button-operaction {
-            background-color: #000000;
-            width: 100px;
+            background-color: #00640090;
+            width: 120px;
             height: 40px;
             color: #ffffff;
             font-size: 16px;
             border-radius: 15px;
-            margin-left: 2%;
+            margin-left: 5%;
             border: none;
         }
         /* EXECUTA AO SELECIONAR O BOTÃO */
         .button-operaction:hover {
+            background-color: #006400;
             transform: scale(1.1, 1.1);
+            font-weight: bold;
         }
     }
 }
@@ -171,6 +174,9 @@ section {
                 padding: 5px 10px;
                 border-top-width: 0;
                 border-left-width: 0;
+            }
+            td {
+                text-transform: uppercase;
             }
             tr:hover {
                 background-color: #000000;

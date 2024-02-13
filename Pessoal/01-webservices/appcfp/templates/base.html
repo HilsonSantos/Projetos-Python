@@ -23,9 +23,7 @@
                     &nbsp;&#129094;
                     {% block titulo %}{% endblock %}
                 </span>
-                <span class="fa-solid fa-square-xmark">
-
-                </span>
+                {% block btnfechar %}{% endblock %}
             </nav>
             {% block header %}{% endblock %}
         </header>
@@ -36,9 +34,9 @@
                     <input id="search-input" type="text" maxlength="800" placeholder="Procurar..." />
                 </div>
                 <div class="div-buttons">
-                   <button class="button-operaction">Incluir</button>
-                   <button class="button-operaction">Alterar</button>
-                   <button class="button-operaction">Excluir</button>
+                    <button class="button-operaction" id="button-insert" onclick="abrirModal()">Incluir</button>
+                    <button class="button-operaction" id="button-update">Alterar</button>
+                    <button class="button-operaction" id="button-delete">Excluir</button>
                 </div>
             </div>
             {% block main %}{% endblock %}
@@ -46,91 +44,15 @@
         <section>
             <div class="div-section">
                 <table>
-                    <thead>
-                        <tr>
-                            <th class="col-status"></th>
-                            <th class="col-codigo">Código</th>
-                            <th class="col-inscricao">inscrição CPF/CNPJ</th>
-                            <th class="col-razaosocial">Nome/Razão Social</th>
-                            <th class="col-fantasia">Nome/Fantásia</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td class="col-codigo">000001</td>
-                            <td class="col-inscricao">00000000000000</td>
-                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
-                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td class="col-codigo">000002</td>
-                            <td class="col-inscricao">00000000000000</td>
-                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
-                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td class="col-codigo">000003</td>
-                            <td class="col-inscricao">00000000000000</td>
-                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
-                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td class="col-codigo">000004</td>
-                            <td class="col-inscricao">00000000000000</td>
-                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
-                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td class="col-codigo">000005</td>
-                            <td class="col-inscricao">00000000000000</td>
-                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
-                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td class="col-codigo">000006</td>
-                            <td class="col-inscricao">00000000000000</td>
-                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
-                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td class="col-codigo">000007</td>
-                            <td class="col-inscricao">00000000000000</td>
-                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
-                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td class="col-codigo">000008</td>
-                            <td class="col-inscricao">00000000000000</td>
-                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
-                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td class="col-codigo">000009</td>
-                            <td class="col-inscricao">00000000000000</td>
-                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
-                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox"></td>
-                            <td class="col-codigo">000010</td>
-                            <td class="col-inscricao">00000000000000</td>
-                            <td class="col-razaosocial">CLIENTE FULANDO DE TAL 000001</td>
-                            <td class="col-fantasia">FULANDO DE TAL 000001</td>
-                        </tr>
-                    </tbody>
+                    {% block table %}{% endblock %}
                 </table>
             </div>
             {% block section %}{% endblock %}
         </section>
         {% endblock %}
+
+        {% block showmodal %}{% endblock %}
+
+        {% block javascript %}{% endblock %}
     </body>
 </html>

@@ -1,3 +1,9 @@
 from django.contrib import admin
+from .models import *
 
-# Register your models here.
+
+class CadClientesAdmin(admin.ModelAdmin):
+    list_display = ('cpfcnpj', 'nrazaosocial')
+
+
+admin.site.register(Clientes, CadClientesAdmin)
