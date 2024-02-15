@@ -45,7 +45,7 @@
                 <p class="title" id="p_title">Atenção</p>
             </div>
             <div class="div-form">
-                <form action="{% url 'cliente-insert' %}" method="POST">
+                <form action="{% url 'cliente-insert' %}" method="POST" onsubmit="return validarCpfCnpj()">
                     {% csrf_token %}
                     <hr class="divisor">
                     <div class="form-floating mb-3">
@@ -99,8 +99,8 @@
                     </div>
                     <hr class="divisor">
                     <div class="div-botoes">
-                        <button class="button-submit" type="button" onclick="validarCpfCnpj()">Salvar</button>
-                        <button class="button-reset" type="reset" onclick="fecharModal()">Cancelar</button>
+                        <button class="button-submit" type="submit">Salvar</button>
+                        <button class="button-reset" onclick="fecharModal()">Cancelar</button>
                     </div>
                 </form>
             </div>
