@@ -5,111 +5,125 @@
     <link rel="stylesheet" href="{% static 'appcfp/css/clientes.css' %}">
 {% endblock %}
 
-{% block titulo %}
-    CADASTRO DE CLIENTES
-{% endblock %}
+{% block body %}
+    {% block titulo %} CADASTRO DE CLIENTES {% endblock %}
 
-{% block table %}
-    <thead>
-        <tr>
-            <th class="col-selecionar"></th>
-            <th class="col-status"></th>
-            <th class="col-codigo">Código</th>
-            <th class="col-inscricao">inscrição CPF/CNPJ</th>
-            <th class="col-razaosocial">Nome/Razão Social</th>
-            <th class="col-fantasia">Nome/Fantásia</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for cliente in clientes %}
-        <tr>
-            <td><input type="checkbox"></td>
-            <td class="col-status">{{cliente.status}}</td>
-            <td class="col-codigo">{{cliente.id}}</td>
-            <td class="col-inscricao">{{cliente.cpfcnpj}}</td>
-            <td class="col-razaosocial">{{cliente.nrazaosocial}}</td>
-            <td class="col-fantasia">{{cliente.nfantasia}}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-{% endblock %}
+    {% block table %}
+        <thead>
+            <tr>
+                <th class="col-selecionar"></th>
+                <th class="col-status"></th>
+                <th class="col-codigo">Código</th>
+                <th class="col-inscricao">CPF/CNPJ</th>
+                <th class="col-razaosocial">Nome/Razão Social</th>
+                <th class="col-fantasia">Nome/Fantásia</th>
+            </tr>
+        </thead>
 
-{% block btnfechar %}
-    <a href="{% url 'home' %}" class="fa-solid fa-square-xmark"></a>
-{% endblock %}
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td><input type="checkbox"></td>
+                <td class="col-status">{{cliente.status}}</td>
+                <td class="col-codigo">{{cliente.id}}</td>
+                <td class="col-inscricao">{{cliente.cpfcnpj}}</td>
+                <td class="col-razaosocial">{{cliente.nrazaosocial}}</td>
+                <td class="col-fantasia">{{cliente.nfantasia}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    {% endblock %}
 
-{% block showmodal %}
-    <div class="div-modal" id="form-modal">
-        <div class="div-modal-content">
-            <div class="div-title">
-                <p class="title" id="p_title">Atenção</p>
+    {% block showmodal %}
+        <div class="div-modal-register" id="form-modal-register">
+            <div class="div-modal-content">
+                <div class="div-title">
+                    <p class="title" id="p_title"></p>
+                </div>
+                <div class="div-form">
+                    <form action="{% url 'cliente-insert' %}" method="POST" onsubmit="return validarCpfCnpj()">
+                        {% csrf_token %}
+                        <hr class="divisor">
+                        <div class="form-floating mb-3">
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    id="cpf_cnpj"
+                                    name="cpf_cnpj"
+                                    maxlength="19"
+                                    pattern="\d*"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                    required="required"
+                            >
+                            <label for="cpf_cnpj">CPF/CNPJ:</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    id="nome_razaosocial"
+                                    name="nome_razaosocial"
+                                    maxlength="255"
+                                    required="required"
+                            >
+                            <label for="nome_razaosocial">Nome/Razão Social:</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    id="nome_fantasia"
+                                    name="nome_fantasia"
+                                    maxlength="150"
+                            >
+                            <label for="nome_fantasia">Nome de Fantásia:</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="tipo" name="tipo" required="required">
+                                <option selected>Selecionar</option>
+                                <option value="F">Física</option>
+                                <option value="J" selected>Jurídica</option>
+                            </select>
+                            <label for="tipo">Tipo</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <select class="form-select" id="status" name="status" disabled>
+                                <option value="A" selected>Ativo</option>
+                                <option value="I">Inativo</option>
+                            </select>
+                            <label for="status">Tipo</label>
+                        </div>
+                        <hr class="divisor">
+                        <div class="div-botoes">
+                            <button class="button-submit">Salvar</button>
+                            <button class="button-reset" onclick="fecharModal()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="div-form">
-                <form action="{% url 'cliente-insert' %}" method="POST" onsubmit="return validarCpfCnpj()">
-                    {% csrf_token %}
-                    <hr class="divisor">
-                    <div class="form-floating mb-3">
-                        <input
-                                class="form-control"
-                                type="text"
-                                id="cpf_cnpj"
-                                name="cpf_cnpj"
-                                maxlength="19"
-                                required="required"
-                                pattern="\d*"
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                        >
-                        <label for="cpf_cnpj">CPF/CNPJ:</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input
-                                class="form-control"
-                                type="text"
-                                id="nome_razaosocial"
-                                name="nome_razaosocial"
-                                maxlength="255"
-                                required="required"
-                        >
-                        <label for="nome_razaosocial">Nome/Razão Social:</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <input
-                                class="form-control"
-                                type="text"
-                                id="nome_fantasia"
-                                name="nome_fantasia"
-                                maxlength="150"
-                        >
-                        <label for="nome_fantasia">Nome de Fantásia:</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <select class="form-select" id="tipo" required="required" name="tipo">
-                            <option selected>Selecionar</option>
-                            <option value="F">Física</option>
-                            <option value="J" selected>Jurídica</option>
-                        </select>
-                        <label for="tipo">Tipo</label>
-                    </div>
-                    <div class="form-floating mb-3">
-                        <select class="form-select" id="status" required="required" name="status" disabled>
-                            <option value="A" selected>Ativo</option>
-                            <option value="I">Inativo</option>
-                        </select>
-                        <label for="status">Tipo</label>
-                    </div>
-                    <hr class="divisor">
-                    <div class="div-botoes">
-                        <button class="button-submit" type="submit">Salvar</button>
-                        <button class="button-reset" onclick="fecharModal()">Cancelar</button>
-                    </div>
-                </form>
-            </div>
-
         </div>
-    </div>
-{% endblock %}
+            <!-- FORMULÁRIO MODAL -->
+        {% if enviar == False %}
+            <div class="div-modal-message" id="form-modal-message">
+                <div class="div-modal-content">
+                    <div class="div-title">
+                        <p class="title">Atenção</p>
+                        <span onclick="fecharModal()">&times;</span>
+                    </div>
+                    <div class="div-message">
+                        <p class="fa-solid fa-triangle-exclamation fa-fade"></p>
+                        <span class="span-message" id="message">{{message}}</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
 
-{% block javascript %}
-    <script src="{% static 'appcfp/js/clientes.js' %}"></script>
-    <script src="{% static 'appcfp/js/cpf-cnpj.js' %}"></script>
+    {% endblock %}
+
+    {% block javascript %}
+        <script src="{% static 'appcfp/js/clientes.js' %}"></script>
+        <script src="{% static 'appcfp/js/cpf-cnpj.js' %}"></script>
+    {% endblock %}
+
+
 {% endblock %}

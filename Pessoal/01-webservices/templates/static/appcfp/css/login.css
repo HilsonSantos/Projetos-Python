@@ -1,6 +1,6 @@
 /* COLUNA DA ESQUERDA */
 .div-container-left {
-    background-color: #000000;
+    background-color: #ffffff;
     display: flex;
     justify-content: right;
     align-items: center;
@@ -10,7 +10,7 @@
     float: left;
     /* VISUAL DO LOGIN */
     .div-login {
-        background-color: #00000070;
+        background-color: #00000030;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -21,8 +21,8 @@
         border: 1px solid #ffffff40;
         /**/
         .div-form {
-            height: auto;
-            width: auto;
+            height: 80%;
+            width: 80%;
             /* IMAGEM DO LOGIN */
             .div-login-image {
                 height: auto;
@@ -36,16 +36,20 @@
             p {
                 font-size: 1.8rem;
                 font-weight: bold;
-                color: #999999;
+                color: #000000;
             }
             /* IMPUT DO USUÁRIO E SENHA */
             div.mb-3 {
                 width: auto;
+                font-size: 1.2rem;
+                input {
+                    font-size: 1.4rem;
+                }
             }
              /* BOTÃO ACESSAR */
             button {
                 background-color: #008000;
-                font-size: 1.2rem;
+                font-size: 1.4rem;
                 color: #ffffff;
                 border: none;
                 border-radius: 10px;
@@ -60,8 +64,8 @@
             }
             /**/
             a {
-                font-size: 0.8rem;
-                color: #999999;
+                font-size: 1rem;
+                color: #000000;
                 text-align: center;
                 margin-top: 20%;
                 cursor: pointer;
@@ -76,6 +80,7 @@
 }
 /* COLULA DA DIREITA */
 .div-container-right {
+    background-color: #ffffff;
     display: flex;
     justify-content: left;
     align-items: center;
@@ -99,7 +104,7 @@
             font-family: arial;
             font-size: 2.4rem;
             font-weight: bold;
-            color: #999999;
+            color: #000000;
             margin: 2%;
         }
     }

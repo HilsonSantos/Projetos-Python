@@ -7,15 +7,19 @@
 
 {% block body %}
     <!-- DIV ONDE CHAMA A IMAGEM -->
-    <div class="div-imagem-central">
-        <img src="{% static 'appcfp/img/logo-empresa-1200x800.png' %}" alt="Logo da empresa">
-    </div>
+    {% block img %}
+        <div class="div-imagem-central">
+            <img src="{% static 'appcfp/img/logo-empresa-1200x800.png' %}" alt="Logo da empresa">
+        </div>
+    {% endblock %}
+
     <!-- BARRA DE SUPERIOR ONDE FICA OS MENUS -->
-    <nav>
-        <div class="div-nav">
+    {% block header %}
+        <nav>
+            <!-- IMAGEM E TÍTULO -->
             <img src="{% static 'appcfp/img/logo-sistema-100x100.png' %}" alt="">
             <span>CONTROLE FINANCEIRO PESSOAL</span>
-
+            <!-- MENU CADASTRO -->
             <div class="div-menu">
                 <a class="a-submenu">Cadastros</a>
                 <div class="div-submenu-itens">
@@ -28,7 +32,7 @@
                     <a href="#">Plano de Contas</a>
                 </div>
             </div>
-
+            <!-- MENU LANÇAMENTOS -->
             <div class="div-menu">
                 <a class="a-submenu">Lançamentos</a>
                 <div class="div-submenu-itens">
@@ -38,7 +42,7 @@
                     <a href="#">Cartões de Créditos</a>
                 </div>
             </div>
-
+            <!-- MENU RELATÓRIOS -->
             <div class="div-menu">
                 <a class="a-submenu">Relatórios</a>
                 <div class="div-submenu-itens">
@@ -53,28 +57,36 @@
                     <a href="#">Relatório 9</a>
                 </div>
             </div>
-
+            <!-- MENU SOBRE -->
             <div class="div-menu">
                 <a class="a-submenu">Sobre</a>
             </div>
-
+            <!-- MENU AJUDA -->
             <div class="div-menu">
                 <a class="a-submenu">Ajuda</a>
             </div>
-
+            <!-- MENU SAIR -->
             <div class="div-menu">
                 <a class="a-submenu" href="{% url 'logoff' %}">Sair</a>
             </div>
+        </nav>
+    {% endblock %}
 
-        </div>
-    </nav>
+    {% block main %}{% endblock %}
+    {% block section %}{% endblock %}
+
     <!-- BARRA INFERIOR - RODAPÉ -->
-    <footer>
-        <div class="div-footer">
-            <span class="span-left">&copy;2023 Todos direitos reservados. «-» Desenvolvimento: Hilson Santos</span>
-            <span class="span-right" id="data-hora">Data/Hora: 00/00/0000 00:00:00</span>
-        </div>
-    </footer>
+    {% block footer %}
+        <footer>
+            <div class="div-footer">
+                <span class="span-left">&copy;2023 Todos direitos reservados. «-» Desenvolvimento: Hilson Santos</span>
+                <span class="span-right" id="data-hora">Data/Hora: 00/00/0000 00:00:00</span>
+            </div>
+        </footer>
+    {% endblock %}
 
-    <script src="{% static 'appcfp/js/home.js' %}"></script>
+    {% block javascript %}
+        <script src="{% static 'appcfp/js/home.js' %}"></script>
+    {% endblock %}
+
 {% endblock %}

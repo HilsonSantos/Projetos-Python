@@ -1,5 +1,5 @@
 /* FORMULÁRIO MODAL */
-.div-modal {
+.div-modal-register {
     background-color: #36363670;
     display: none;
     align-items: center;
@@ -16,7 +16,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        text-align: left;
+
         margin: 2% auto;
         border-radius: 15px;
         width: 30%;
@@ -26,15 +26,15 @@
         /* BARRA DE TITULO */
         .div-title {
             background-color: #000000;
+            text-align: center;
             height: 14%;
             width: 100%;
             border-radius: 10px 10px 0 0;
-            padding-left: 2%;
+            margin-top: 1%;
             /* DESCRIÇÃO */
             .title {
                 font-size: 1.8rem;
                 color: #ffffff;
-                margin: 0;
             }
         }
         .div-form {
@@ -93,6 +93,72 @@
                 .button-reset:hover {
                     transform: scale(1.1, 1.1);
                 }
+            }
+        }
+    }
+}
+/* FORMULÁRIO MODAL */
+.div-modal-message {
+    background-color: #36363670;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* CONTEÚDO */
+    .div-modal-content {
+        background-color: #ffffff;
+        margin: 15% auto;
+        border-radius: 15px;
+        width: 40%;
+        height: 40vh;
+        border: 2px solid #36363690;
+        box-shadow: 0 0 10px #ffffff;
+        /* BARRA DE TITULO */
+        .div-title {
+            background-color: #40404020;
+            height: 50px;
+            width: auto;
+            border-radius: 10px 10px 0 0;
+            /* DESCRIÇÃO */
+            .title {
+                font-size: 1.8rem;
+                float: left;
+                padding-left: 10px;
+                color: #000000;
+            }
+            /* BOTÃO */
+            span {
+                color: #000000;
+                font-size: 1.8rem;
+                font-weight: bold;
+                float: right;
+                padding: 0 15px 0 15px;
+                cursor: pointer;
+            }
+            /* AO COLOCAR O MOUSE NO BOTÃO */
+            span:hover {
+                transform: scale(1.3, 1.3)
+            }
+        }
+        /* DIV DA MENSAGEM */
+        .div-message {
+            display: block;
+            text-align: center;
+            margin-top: 15%;
+            font-size: 1.4rem;
+            /* ICONE */
+            .fa-solid {
+                 color: #ffa500;
+                 font-size: 2.5rem;
+            }
+            /* MENSAGEM */
+            .span-message {
+                font-size: 1.8rem;
+                padding: 10px;
             }
         }
     }

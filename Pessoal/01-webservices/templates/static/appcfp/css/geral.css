@@ -5,7 +5,7 @@ html {
 }
 /**/
 body {
-    background: #000000;
+    background: #00000040;
     overflow: hidden; /* Evita rolagem da página horizontalmente */
 }
 /**/
@@ -20,7 +20,7 @@ header {
     margin: 1%;
 
     .div-nav {
-        background-color: #000000;
+        background-color: transparent;
         display: flex;
         align-items: center;
         height: 65px;
@@ -36,7 +36,7 @@ header {
         span {
             font-weight: bold;
             font-size: 1.4rem;
-            color: #ffffff;
+            color: #000000;
             margin-left: 15px;
         }
         /* BOTÃO FECHAR */
@@ -45,7 +45,7 @@ header {
             right: 2%;
             font-size: 2.2rem;
             font-weight: bold;
-            color: #ffffff;
+            color: #242424;
             text-decoration: none;
         }
         /* EXECUTA QUANDO O MOUSE SELECIONA */
@@ -56,8 +56,8 @@ header {
     }
 }
 /* BARRA DE EDIT DE FILTRAR E OS BOTÕES DE INCLUIR, ALTERAR E EXCLUIR */
-.div-operaction {
-    background-color: #242424;
+.div-operation {
+    background-color: transparent;
     display: flex;
     justity-content: center;
     align-items: center;
@@ -67,29 +67,30 @@ header {
     color: #000000;
     position: fixed;
     top: 10%;
-    margin: 1%;
     /* DIV DO EDIT DE FILTRAGEM */
     .div-input-search {
+        background-color: #ffffff;
         display: flex;
         align-items: center;
         width: 364px;
         height: 48px;
-        background-color: #000000;
         border-radius: 500px;
         border: 1px solid transparent;
         margin-left: 1%;
         /* IMAGEM */
         img {
-            width: 16px;
-            height: 16px;
+            width: 24px;
+            height: 24px;
             margin-left: 10px;
+            image-color: #000000;
         }
         /* EDIT */
         input {
             background: transparent;
+            font-size: 1.2rem;
             border: none;
             padding: 0px 100px 0 12px;
-            color: #ffffff;
+            color: #000000;
             text-overflow: ellipsis; /* Especifica como o conteúdo estourado que não é exibido deve ser sinalizado para o usuário. */
             overflow: hidden;
             white-space: nowrap; /* Especifica como o espaço em branco dentro de um elemento é manipulado. */
@@ -100,21 +101,19 @@ header {
     .div-buttons {
         display: flex;
         align-items: center;
-        margin-left: 2%;
         /* BOTÕES */
-        .button-operaction {
-            background-color: #00640090;
+        .button-operation {
+            background-color: #242424;
             width: 120px;
-            height: 40px;
+            height: 48px;
             color: #ffffff;
-            font-size: 16px;
+            font-size: 1.1rem;
             border-radius: 15px;
             margin-left: 5%;
             border: none;
         }
         /* EXECUTA AO SELECIONAR O BOTÃO */
-        .button-operaction:hover {
-            background-color: #006400;
+        .button-operation:hover {
             transform: scale(1.1, 1.1);
             font-weight: bold;
         }
@@ -122,36 +121,41 @@ header {
 }
 /* SECTION */
 section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    bottom: 1%;
-    height: 78vh;
-    width: 100%;
-    .div-section {
-        background-color: #242424;
+    .div-table {
+        background-color: #ffffff50;
         display: flex;
-        height: 100%;
-        width: 100%;
+        justify-content: center;
+        align-items: top;
+        position: fixed;
+        left: 1%;
+        right: 1%;
+        bottom: 2%;
+        height: 76vh;
+        width: 98%;
         border-radius: 10px;
-        margin: 1%;
-        z-index: 0; /* Faz com que a imagem fique por trás */
 
         table {
             width: 100%;
-            height: auto;
+            height: 90vh;
             display: block;
             border: none;
-            color: #ffffff;
-            top: 0;
-
+            color: #000000;
+            font-size: 1.3rem;
+            .col-selecionar {
+                width: 1vw;
+                text-align: center;
+                border-radius: 10px 0 0 0;
+            }
+            .col-status {
+                width: 1vw;
+                text-align: center;
+            }
             .col-codigo {
-                width: 5vw;
+               width: 4vw;
                 text-align: center;
             }
             .col-inscricao {
-                width: 15vw;
+                width: 14vw;
                 text-align: center;
             }
             .col-razaosocial {
@@ -161,13 +165,13 @@ section {
             .col-fantasia {
                 width: 30vw;
                 text-align: left;
+                border-radius: 0 10px 0 0;
             }
             th {
-                background-color: #000000;
+                background-color: #242424;
                 color: #ffffff;
                 vertical-align: bottom;
                 position: sticky;
-                top: 0;
             }
             th,
             td {
@@ -179,7 +183,7 @@ section {
                 text-transform: uppercase;
             }
             tr:hover {
-                background-color: #000000;
+                background-color: #ffffff;
                 cursor: pointer;
             }
         }

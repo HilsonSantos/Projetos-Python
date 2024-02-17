@@ -77,7 +77,12 @@ class CadastroClientes(object):
 
     def view(self):
         clientes = Clientes.objects.all()
-        dados = {'clientes': clientes}
+        message = "Precisa logar novamente no sistema."
+        dados = {
+            'clientes': clientes,
+            'enviar': False,
+            'message': message
+        }
         return render(self, 'clientes\clientes_listar.html', dados)
 
     def insert(self):
@@ -93,16 +98,21 @@ class CadastroClientes(object):
         #
         if status is None:
             status = 'A'
-        #
-        cliente = Clientes(
-            cpfcnpj=cpf_cnpj,
-            nrazaosocial=nrazaosocial,
-            nfantasia=nfantasia,
-            tipo=tipo,
-            status=status
-        )
-        #
-        cliente.save()
+
+        consulta_cliente = Clientes.objects.filter(cpfcnpj=cpf_cnpj)
+
+        if not consulta_cliente.exists():
+            #
+            cliente = Clientes(
+                cpfcnpj=cpf_cnpj,
+                nrazaosocial=nrazaosocial,
+                nfantasia=nfantasia,
+                tipo=tipo,
+                status=status
+            )
+            #
+            cliente.save()
+
         return redirect('/clientes/')
 
     def update(self):

@@ -88,7 +88,7 @@ function validarCpfCnpj(){
             }
         }
     }
-    else if (numQuantidade != 11 || numQuantidade != 14){
+    else if (numQuantidade != 0 && (numQuantidade != 11 || numQuantidade != 14)){
         if (tipInformado == 'F'){
             alert('CPF inválido!')
             return false
