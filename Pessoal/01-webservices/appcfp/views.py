@@ -4,61 +4,64 @@ from django.contrib.auth.models import User
 from .models import *
 
 
-def login(request):
-    """ ESSA FUNÇÃO ELIMINA A ID DO USUÁRIO LOGADO NA SESSION """
-    request.session.flush()
-    return render(request, 'login.html', {'enviar': False})
-
-
-def logoff(request):
+def logoff():
     """ ESSA FUNÇÃO RETORNA A PÁGINA DE LOGIN """
     return redirect('/')
 
 
-def autenticacao(request):
-    """ ESSA FUNÇÃO VERIFICA SE O USUÁRIO PREENCHEU OS DADOS E VALIDA AS CREDENCIAIS """
+class Usuarios(object):
+    def __init__(self):
+        self.GET = None
+        self.session = None
 
-    username = request.GET.get('username')
-    password = request.GET.get('password')
+    def login(self):
+        """ ESSA FUNÇÃO ELIMINA A ID DO USUÁRIO LOGADO NA SESSION """
+        self.session.flush()
+        return render(self, 'login.html', {'enviar': False})
 
-    # SE O USUÁRIO E SENHA ESTIVER NÃO INFORMADOS, ENVIA UMA MENSAGEM.
-    if len(username.strip()) == 0 and len(password.strip()) == 0:
-        message = "Usuário e senha não informado."
-        return render(request, 'login.html', {'enviar': True, 'message': message})
-    # SE O USUÁRIO NÃO ESTIVER INFORMADO, ENVIA UMA MENSAGEM.
-    elif len(username.strip()) == 0:
-        message = "Usuário não informado."
-        return render(request, 'login.html', {'enviar': True, 'message': message})
-    # SE A SENHA NÃO ESTIVER INFORMADA, ENVIA UMA MENSAGEM.
-    elif len(password.strip()) == 0:
-        message = "Senha não informado."
-        return render(request, 'login.html', {'enviar': True, 'message': message})
-    else:
-        try:
-            # A VARIÁVEL RECEBER OS DADOS DO USUÁRIO LOGADO.
-            user = User.objects.get(username=username)
-            # A VARIÁVEL RECEBE A INFORMAÇÃO DO CAMPO ID.
-            user_id = user.id
-            # A VARIÁVEL RECEBE A INFORMAÇÃO DO CAMPO, SE ESTÁ ATIVO.
-            isactive = user.is_active
-            # SE O USUÁRIO ESTIVER INATIVO, ENVIA UMA MENSAGEM.
-            if not isactive:
-                message = "Usuário está inativo."
-                return render(request, 'login.html', {'enviar': True, 'message': message})
-            else:
-                # VERIFICA AS CREDENCIAIS DO USUÁRIO.
-                authentication = authenticate(username=username, password=password)
-                # SE AUTENTICIDADE FOR OK, ENTRA NO SISTEMA, CASO CONTRÁRIO, ENVIA UMA MENSAGEM.
-                if authentication is not None:
-                    # GRAVA A INFORMAÇÃO DA ID DO USUÁRIO NO SESSION.
-                    request.session['usuario_id'] = user_id
-                    return redirect('/home/')
+    def autenticacao(self):
+        """ ESSA FUNÇÃO VERIFICA SE O USUÁRIO PREENCHEU OS DADOS E VALIDA AS CREDENCIAIS """
+        username = self.GET.get('username')
+        password = self.GET.get('password')
+
+        # SE O USUÁRIO E SENHA ESTIVER NÃO INFORMADOS, ENVIA UMA MENSAGEM.
+        if len(username.strip()) == 0 and len(password.strip()) == 0:
+            message = "Usuário e senha não informado."
+            return render(self, 'login.html', {'enviar': True, 'message': message})
+        # SE O USUÁRIO NÃO ESTIVER INFORMADO, ENVIA UMA MENSAGEM.
+        elif len(username.strip()) == 0:
+            message = "Usuário não informado."
+            return render(self, 'login.html', {'enviar': True, 'message': message})
+        # SE A SENHA NÃO ESTIVER INFORMADA, ENVIA UMA MENSAGEM.
+        elif len(password.strip()) == 0:
+            message = "Senha não informado."
+            return render(self, 'login.html', {'enviar': True, 'message': message})
+        else:
+            try:
+                # A VARIÁVEL RECEBER OS DADOS DO USUÁRIO LOGADO.
+                user = User.objects.get(username=username)
+                # A VARIÁVEL RECEBE A INFORMAÇÃO DO CAMPO ID.
+                user_id = user.id
+                # A VARIÁVEL RECEBE A INFORMAÇÃO DO CAMPO, SE ESTÁ ATIVO.
+                isactive = user.is_active
+                # SE O USUÁRIO ESTIVER INATIVO, ENVIA UMA MENSAGEM.
+                if not isactive:
+                    message = "Usuário está inativo."
+                    return render(self, 'login.html', {'enviar': True, 'message': message})
                 else:
-                    message = "Senha inválida."
-                    return render(request, 'login.html', {'enviar': True, 'message': message})
-        except:
-            message = "Usuário não cadastrado."
-            return render(request, 'login.html', {'enviar': True, 'message': message})
+                    # VERIFICA AS CREDENCIAIS DO USUÁRIO.
+                    authentication = authenticate(username=username, password=password)
+                    # SE AUTENTICIDADE FOR OK, ENTRA NO SISTEMA, CASO CONTRÁRIO, ENVIA UMA MENSAGEM.
+                    if authentication is not None:
+                        # GRAVA A INFORMAÇÃO DA ID DO USUÁRIO NO SESSION.
+                        self.session['usuario_id'] = user_id
+                        return redirect('/home/')
+                    else:
+                        message = "Senha inválida."
+                        return render(self, 'login.html', {'enviar': True, 'message': message})
+            except:
+                message = "Usuário não cadastrado."
+                return render(self, 'login.html', {'enviar': True, 'message': message})
 
 
 def home(request):
@@ -73,19 +76,18 @@ def home(request):
 
 class CadastroClientes(object):
     def __init__(self):
-        self.POST = 'POST'
+        self.GET = None
+        self.POST = None
+        self.session = None
 
-    def view(self):
+    def _list(self):
         clientes = Clientes.objects.all()
-        message = "Precisa logar novamente no sistema."
         dados = {
-            'clientes': clientes,
-            'enviar': False,
-            'message': message
+            'clientes': clientes
         }
         return render(self, 'clientes\clientes_listar.html', dados)
 
-    def insert(self):
+    def _insert(self):
         #
         cpf_cnpj = self.POST.get('cpf_cnpj')
         nrazaosocial = self.POST.get('nome_razaosocial')
@@ -101,7 +103,9 @@ class CadastroClientes(object):
 
         consulta_cliente = Clientes.objects.filter(cpfcnpj=cpf_cnpj)
 
-        if not consulta_cliente.exists():
+        if consulta_cliente.exists():
+           pass
+        else:
             #
             cliente = Clientes(
                 cpfcnpj=cpf_cnpj,

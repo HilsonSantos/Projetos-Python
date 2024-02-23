@@ -21,14 +21,20 @@
         </thead>
 
         <tbody>
-            {% for cliente in clientes %}
+            {% for r in clientes %}
             <tr>
                 <td><input type="checkbox"></td>
-                <td class="col-status">{{cliente.status}}</td>
-                <td class="col-codigo">{{cliente.id}}</td>
-                <td class="col-inscricao">{{cliente.cpfcnpj}}</td>
-                <td class="col-razaosocial">{{cliente.nrazaosocial}}</td>
-                <td class="col-fantasia">{{cliente.nfantasia}}</td>
+                <td class="col-status">
+                    {% if r.status == 'A' %}
+                        &#9899;
+                    {% else %}
+                        &#128308;
+                    {% endif %}
+                </td>
+                <td class="col-codigo">{{r.id}}</td>
+                <td class="col-inscricao">{{r.cpfcnpj}}</td>
+                <td class="col-razaosocial">{{r.nrazaosocial}}</td>
+                <td class="col-fantasia">{{r.nfantasia}}</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -41,7 +47,7 @@
                     <p class="title" id="p_title"></p>
                 </div>
                 <div class="div-form">
-                    <form action="{% url 'cliente-insert' %}" method="POST" onsubmit="return validarCpfCnpj()">
+                    <form action="{% url 'cliente-insert' %}" method="POST">
                         {% csrf_token %}
                         <hr class="divisor">
                         <div class="form-floating mb-3">
@@ -95,28 +101,27 @@
                         </div>
                         <hr class="divisor">
                         <div class="div-botoes">
-                            <button class="button-submit">Salvar</button>
+                            <button class="button-submit" onclick="return validarCpfCnpj()">Salvar</button>
                             <button class="button-reset" onclick="fecharModal()">Cancelar</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-            <!-- FORMULÁRIO MODAL -->
-        {% if enviar == False %}
-            <div class="div-modal-message" id="form-modal-message">
-                <div class="div-modal-content">
-                    <div class="div-title">
-                        <p class="title">Atenção</p>
-                        <span onclick="fecharModal()">&times;</span>
-                    </div>
-                    <div class="div-message">
-                        <p class="fa-solid fa-triangle-exclamation fa-fade"></p>
-                        <span class="span-message" id="message">{{message}}</span>
-                    </div>
+
+        <!-- FORMULÁRIO MODAL -->
+        <div class="div-modal-message" id="form-modal-message">
+            <div class="div-modal-content">
+                <div class="div-title">
+                    <p class="title">Atenção</p>
+                    <span onclick="fecharModal()">&times;</span>
+                </div>
+                <div class="div-message">
+                    <p class="fa-solid fa-triangle-exclamation fa-fade"></p>
+                    <span class="span-message" id="message">{{message}}</span>
                 </div>
             </div>
-        {% endif %}
+        </div>
 
     {% endblock %}
 
