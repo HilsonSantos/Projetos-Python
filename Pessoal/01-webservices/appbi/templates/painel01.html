@@ -1,10 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% load static %}
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <title>Painel-Vendas v2024.3.1</title>
+        <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+        <link rel="stylesheet" href="{% static 'appbi/css/painel.css' %}">
+    </head>
+    <body>
+        <header>
+            <h2 class="title">
+                Análise de Vendas
+                <hr>
+            </h2>
+        </header>
 
-</body>
+        <div class="div-row-charts">
+          <div class="div-column-charts" id="barchart-vendas-total-ano"></div>
+          <div class="div-column-charts" id="barchart-pedentrega-pesobruto"></div>
+          <div class="div-column-charts" id="piechart-pedentrega-pesobruto"></div>
+        </div>
+
+        <div class="div-row-charts">
+          <div class="div-column-charts" id="barchart-vendas-total-mes"></div>
+          <div class="div-column-charts" id="barchart-pedretira-pesobruto"></div>
+          <div class="div-column-charts" id="piechart-pedretira-pesobruto"></div>
+        </div>
+
+
+        <footer>
+            <div class="footer-div">
+                <span class="information">&copy; 2024 HS informática. Todos direitos reservados</span>
+                <span class="department"><strong>Desenvolvido por: </strong>Hilson Santos</span>
+            </div>
+        </footer>
+
+        <script src="https://www.gstatic.com/charts/loader.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="{% static 'appbi/js/painel01.js' %}"></script>
+        <script>
+
+            window.onload = function(e){
+                openDashboard('{% url "data-analysis-painel01" %}')
+            }
+            /*
+            setInterval(
+                function(e){
+                    openDashboard('{% url "data-analysis-painel01" %}')
+                },
+                1000
+            )
+            */
+        </script>
+    </body>
 </html>
