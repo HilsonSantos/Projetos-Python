@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse
 from django.http import JsonResponse
 import pandas as pd
+import requests
 
 
 def painel01(request):
@@ -89,7 +90,7 @@ def analise_dados(request):
         li_vendastotalvalorano.append(lista.tolist())
 
     li_vendastotalvalormes = list()
-    df_vendastotalvalormes = df_vendas[df_vendas['VendaAno'] == 2022].groupby(by='VendaMes', sort=True)['VendaTotal'].sum().reset_index()
+    df_vendastotalvalormes = df_vendas.groupby(by='VendaMes', sort=True)['VendaTotal'].sum().reset_index()
     li_vendastotalvalormes.append(df_vendastotalvalormes.columns.tolist())
     for lista in df_vendastotalvalormes.values:
         li_vendastotalvalormes.append(lista.tolist())
@@ -100,3 +101,24 @@ def analise_dados(request):
     }
 
     return JsonResponse(data)
+
+
+class BearerAuth(requests.auth.AuthBase):
+    def __init__(self, token):
+        self.token = token
+
+    def __call__(self, r):
+        r.headers["authorization"] = "Bearer " + self.token
+        return r
+
+
+def listafundos(request):
+    token = '1d5r8yt963h2v4g5h6j3k138sbfiec21'
+    headers = {"Content-type": "application/json-patch+json"}
+    url = 'https://restcountries.com/v3.1/all'
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+    else:
+        data = f'Erro ao fazer a solicitação: {response.status_code}'
+    return HttpResponse(data)

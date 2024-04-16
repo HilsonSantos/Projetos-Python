@@ -7,7 +7,7 @@ header {
     justify-content: center;
     align-items: center;
     text-align: center;
-    height: 12vh;
+    height: 8vh;
     width: 100%;
     img.img-left {
         position: fixed;
@@ -23,20 +23,46 @@ header {
     }
     h2 {
         text-align: center;
-        color: DarkGreen;
-        font-size: 2.4rem;
+        color: #222c66;
+        font-size: 2.8rem;
         text-shadow: 2px 2px 5px #363636;
         margin.top: 6px;
     }
-    span {
-        font-size: 2.9rem;
-        color: DarkGreen;
-    }
     hr {
-        margin: 1%;
+        margin: 0;
         border: 0;
         height: 5px;
-        background-image: linear-gradient(to right, transparent, DarkGreen, transparent);
+        background-image: linear-gradient(to right, transparent, #222c66, transparent);
+    }
+}
+.div-row-filter {
+    background-color: #222c6690;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    flex: 1;
+    height: 8vh;
+    border: 1px solid #222c6690;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    .div-filtros {
+        background-color: #222c66;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 10%;
+        height: 8vh;
+        color: #ffffff;
+        font-size: 1.8rem;
+        font-weight: bold;
+    }
+    form {
+        margin: 1%;
+        label {
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: bold;
+        }
     }
 }
 .div-row-charts {
@@ -47,7 +73,7 @@ header {
         justify-content: center;
         align-items: center;
         flex: 1;
-        height: 41.3vh;
+        height: 40vh;
         border: 1px solid #ffffff;
         -webkit-flex: 1;
         -ms-flex: 1;

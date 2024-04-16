@@ -5,6 +5,7 @@
         <meta charset="UTF-8">
         <title>Painel-Vendas v2024.3.1</title>
         <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'appbi/css/painel.css' %}">
     </head>
     <body>
@@ -14,6 +15,19 @@
                 <hr>
             </h2>
         </header>
+
+        <div class="div-row-filter">
+            <div class="div-filtros">
+                FILTROS
+            </div>
+            <form>
+                <label>
+                    &nbsp;&nbsp;Ano
+                    <select class="form-select" aria-label="Default select example" id="ano-Select" onchange="obterValorSelecionado()">
+                    </select>
+                </label>
+            </form>
+        </div>
 
         <div class="div-row-charts">
           <div class="div-column-charts" id="barchart-vendas-total-ano"></div>
@@ -37,12 +51,14 @@
 
         <script src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
         <script src="{% static 'appbi/js/painel01.js' %}"></script>
         <script>
 
             window.onload = function(e){
                 openDashboard('{% url "data-analysis-painel01" %}')
             }
+
             /*
             setInterval(
                 function(e){
