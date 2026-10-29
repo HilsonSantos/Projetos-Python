@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %} Grupos e permissões {% endblock %}
+{% block content %}
+    <h1>Grupos e permissões</h1>
+    <div class="d-flex gap-2 mb-4">
+        <a class="btn btn-primary" href="{% url 'grupo_novo' %}">Novo grupo</a>
+        <a class="btn btn-outline-secondary" href="{% url 'usuarios_lista' %}">Usuários</a>
+    </div>
+    <table class="table table-striped table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Grupo</th>
+                <th>Permissões</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grupo in grupos %}
+                <tr>
+                    <td>{{ grupo.name }}</td>
+                    <td>{{ grupo.permissions.count }}</td>
+                    <td>
+                        <a href="{% url 'grupo_editar' grupo.pk %}">Editar permissões</a>
+                        <a href="{% url 'grupo_excluir' grupo.pk %}">Excluir</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">Nenhum grupo cadastrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

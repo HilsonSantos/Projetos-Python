@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %} {{ titulo }} {% endblock %}
+{% block content %}
+    <h1>{{ titulo }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            {{ form.non_field_errors }}
+        {% endif %}
+        <p>
+            <label for="{{ form.name.id_for_label }}">Nome do grupo</label>
+            {{ form.name }}{{ form.name.errors }}
+        </p>
+        <p>
+            <label for="{{ form.permissions.id_for_label }}">Permissões</label>
+            <label><input type="checkbox" id="selecionar-todas"> Selecionar todas</label>
+            {{ form.permissions }}{{ form.permissions.errors }}
+        </p>
+        <button class="btn btn-primary" type="submit">Salvar grupo</button>
+        <a href="{% url 'grupos_lista' %}">Cancelar</a>
+    </form>
+    <script>
+        const selecionarTodas = document.getElementById("selecionar-todas");
+        const permissoes = document.getElementById("{{ form.permissions.id_for_label }}");
+
+        selecionarTodas.addEventListener("change", function () {
+            for (const permissao of permissoes.options) {
+                permissao.selected = selecionarTodas.checked;
+            }
+        });
+
+        permissoes.addEventListener("change", function () {
+            selecionarTodas.checked = [...permissoes.options].every((permissao) => permissao.selected);
+        });
+
+        selecionarTodas.checked = permissoes.options.length > 0 &&
+            [...permissoes.options].every((permissao) => permissao.selected);
+    </script>
+{% endblock %}

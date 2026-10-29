@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %} {{ titulo }} {% endblock %}
+{% block content %}
+    <h1>{{ titulo }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            {{ form.non_field_errors }}
+        {% endif %}
+        <fieldset class="mb-4">
+            <legend class="h5">Dados de acesso</legend>
+            <p>
+                <label for="{{ form.username.id_for_label }}">Usuário</label>
+                {{ form.username }}{{ form.username.errors }}
+            </p>
+            {% if form.nova_senha %}
+                <p>
+                    <label for="{{ form.nova_senha.id_for_label }}">Nova senha</label>
+                    {{ form.nova_senha }}{{ form.nova_senha.errors }}
+                </p>
+                <p>
+                    <label for="{{ form.confirmar_senha.id_for_label }}">Confirmar nova senha</label>
+                    {{ form.confirmar_senha }}{{ form.confirmar_senha.errors }}
+                </p>
+            {% else %}
+                <p>
+                    <label for="{{ form.password1.id_for_label }}">Senha</label>
+                    {{ form.password1 }}{{ form.password1.errors }}
+                </p>
+                <p>
+                    <label for="{{ form.password2.id_for_label }}">Confirmar senha</label>
+                    {{ form.password2 }}{{ form.password2.errors }}
+                </p>
+            {% endif %}
+        </fieldset>
+        <fieldset class="mb-4">
+            <legend class="h5">Dados pessoais</legend>
+            <p>
+                <label for="{{ form.first_name.id_for_label }}">Nome</label>
+                {{ form.first_name }}{{ form.first_name.errors }}
+            </p>
+            <p>
+                <label for="{{ form.last_name.id_for_label }}">Sobrenome</label>
+                {{ form.last_name }}{{ form.last_name.errors }}
+            </p>
+            <p>
+                <label for="{{ form.email.id_for_label }}">E-mail</label>
+                {{ form.email }}{{ form.email.errors }}
+            </p>
+            <p>
+                <label for="{{ form.tipo.id_for_label }}">Tipo de usuário</label>
+                {{ form.tipo }}{{ form.tipo.errors }}
+            </p>
+        </fieldset>
+        <fieldset class="mb-4">
+            <legend class="h5">Status e permissões</legend>
+            <p>
+                <label>{{ form.is_active }} Usuário ativo</label>
+                {{ form.is_active.errors }}
+            </p>
+            <p>
+                <label>{{ form.is_staff }} Acesso administrativo</label>
+                {{ form.is_staff.errors }}
+            </p>
+            <p>
+                <label>{{ form.is_superuser }} Superusuário</label>
+                {{ form.is_superuser.errors }}
+            </p>
+            <p>
+                <label for="{{ form.groups.id_for_label }}">Grupos</label>
+                {{ form.groups }}{{ form.groups.errors }}
+            </p>
+            <p>
+                <label for="{{ form.user_permissions.id_for_label }}">Permissões individuais</label>
+                {{ form.user_permissions }}{{ form.user_permissions.errors }}
+            </p>
+        </fieldset>
+        <button class="btn btn-primary" type="submit">Salvar</button>
+        <a href="{% url 'usuarios_lista' %}">Cancelar</a>
+    </form>
+{% endblock %}

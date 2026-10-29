@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínica Médica</title>
+    <style>
+        .botao {
+            background: #0d6efd;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Clínica Médica</h1>
+        {% if empresa %}
+            <p>Empresa selecionada: <strong>{{ empresa.razao_social }}</strong></p>
+        {% else %}
+            <p>Bem-vindo à nossa clínica.</p>
+        {% endif %}
+        {% if user.is_authenticated %}
+            {% if user.is_staff %}
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <a class="botao" href="{% url 'usuario_novo' %}">Cadastrar usuário</a>
+                    <a class="botao" href="{% url 'grupo_novo' %}">Cadastrar grupo</a>
+                    <a class="botao" href="{% url 'usuarios_lista' %}">Gerenciar usuários</a>
+                    <a class="botao" href="{% url 'grupos_lista' %}">Gerenciar grupos</a>
+                </div>
+            {% endif %}
+            <a class="botao" href="{% url 'logout' %}">Sair</a>
+        {% else %}
+            <a class="botao" href="{% url 'login' %}">Entrar</a>
+            <a class="botao" href="{% url 'cadastro_paciente' %}">Cadastre-se como paciente</a>
+        {% endif %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: app-clinicamedica-db
+    environment:
+      POSTGRES_DB: clinicamedica
+      POSTGRES_USER: clinicamedica
+      POSTGRES_PASSWORD: clinicamedica
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: app-clinicamedica:1.0
+    container_name: app-clinicamedica
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+      VIRTUAL_ENV: /opt/venv
+      PATH: /opt/venv/bin:/usr/local/bin:/usr/bin:/bin
+    command: sh -c "/opt/venv/bin/python manage.py migrate && /opt/venv/bin/python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  postgres_data:

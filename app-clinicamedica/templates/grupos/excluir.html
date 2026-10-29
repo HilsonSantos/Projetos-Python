@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %} Excluir grupo {% endblock %}
+{% block content %}
+    <h1>Excluir grupo</h1>
+    <p>
+        Deseja realmente excluir o grupo
+        <strong>{{ grupo.name }}</strong>?
+    </p>
+    <form method="post">
+        {% csrf_token %}
+        <button class="danger" type="submit">Confirmar exclusão</button>
+        <a href="{% url 'grupos_lista' %}">Cancelar</a>
+    </form>
+{% endblock %}
