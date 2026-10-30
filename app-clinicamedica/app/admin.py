@@ -49,7 +49,9 @@ except admin.sites.NotRegistered:
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
     inlines = (EmpresaInline,)
-    list_display = ("username", "email", "first_name", "last_name", "tipo", "is_staff", "empresa_vinculada")
+    fieldsets = DjangoUserAdmin.fieldsets + (("Vínculo com a empresa", {"fields": ("empresa",)}),)
+    add_fieldsets = DjangoUserAdmin.add_fieldsets + (("Vínculo com a empresa", {"fields": ("empresa",)}),)
+    list_display = ("username", "email", "first_name", "last_name", "tipo", "empresa", "is_staff", "empresa_vinculada")
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")
     search_fields = ("username", "first_name", "last_name", "email", "empresa__razao_social")
 

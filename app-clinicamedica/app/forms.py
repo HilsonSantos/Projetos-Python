@@ -58,10 +58,27 @@ class UsuarioCreateForm(UserCreationForm):
             field.widget.attrs["class"] = "form-check-input" if isinstance(field.widget, forms.CheckboxInput) else "form-control"
         self.fields["user_permissions"].label_from_instance = rotulo_permissao
 
+    def save(self, commit=True):
+        usuario = super().save(commit=False)
+        usuario.is_staff = usuario.tipo == User.Tipo.ADMINISTRADOR or usuario.is_superuser
+        if commit:
+            usuario.save()
+            self.save_m2m()
+        return usuario
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if (
+            cleaned_data.get("tipo") != User.Tipo.ADMINISTRADOR
+            and not cleaned_data.get("empresa")
+        ):
+            self.add_error("empresa", "Informe a empresa para este tipo de usuário.")
+        return cleaned_data
+
     class Meta:
         model = User
         fields = (
-            "username", "first_name", "last_name", "email", "tipo", "is_active",
+            "username", "first_name", "last_name", "email", "tipo", "empresa", "is_active",
             "is_staff", "is_superuser", "groups", "user_permissions",
         )
 
@@ -73,7 +90,7 @@ class UsuarioUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = (
-            "username", "first_name", "last_name", "email", "tipo", "is_active",
+            "username", "first_name", "last_name", "email", "tipo", "empresa", "is_active",
             "is_staff", "is_superuser", "groups", "user_permissions",
         )
 
@@ -91,6 +108,11 @@ class UsuarioUpdateForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        if (
+            cleaned_data.get("tipo") != User.Tipo.ADMINISTRADOR
+            and not cleaned_data.get("empresa")
+        ):
+            self.add_error("empresa", "Informe a empresa para este tipo de usuário.")
         senha = cleaned_data.get("nova_senha")
         confirmacao = cleaned_data.get("confirmar_senha")
         if senha != confirmacao:
@@ -99,6 +121,8 @@ class UsuarioUpdateForm(forms.ModelForm):
 
     def save(self, commit=True):
         usuario = super().save(commit=False)
+        # O tipo define o acesso; as flags do Django acompanham o papel.
+        usuario.is_staff = usuario.tipo == User.Tipo.ADMINISTRADOR or usuario.is_superuser
         if self.cleaned_data.get("nova_senha"):
             usuario.set_password(self.cleaned_data["nova_senha"])
         if commit:

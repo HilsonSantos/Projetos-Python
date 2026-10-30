@@ -25,6 +25,27 @@ class Usuario(AbstractUser):
         choices=Tipo.choices,
         default=Tipo.PACIENTE,
     )
+    empresa = models.ForeignKey(
+        "Empresa",
+        on_delete=models.SET_NULL,
+        related_name="usuarios",
+        null=True,
+        blank=True,
+        verbose_name="empresa",
+    )
+
+    @property
+    def is_administrador(self):
+        """Indica se o usuário pode administrar a aplicação."""
+        return self.is_superuser or self.tipo == self.Tipo.ADMINISTRADOR
+
+    @property
+    def is_colaborador(self):
+        return self.tipo == self.Tipo.COLABORADOR
+
+    @property
+    def is_paciente(self):
+        return self.tipo == self.Tipo.PACIENTE
 
     class Meta:
         db_table = "app_usuario"

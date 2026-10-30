@@ -21,17 +21,28 @@
         <h1>Clínica Médica</h1>
         {% if empresa %}
             <p>Empresa selecionada: <strong>{{ empresa.razao_social }}</strong></p>
+            <p>Endereço de acesso: <code>/empresa/{{ empresa.identificador_hash }}/</code></p>
         {% else %}
-            <p>Bem-vindo à nossa clínica.</p>
+            {% if user.is_administrador %}
+                <p>Acesso global do administrador da aplicação. Nenhuma empresa precisa ser identificada.</p>
+            {% else %}
+                <p>Bem-vindo à nossa clínica.</p>
+            {% endif %}
         {% endif %}
         {% if user.is_authenticated %}
-            {% if user.is_staff %}
+            <p>Perfil: <strong>{{ user.get_tipo_display }}</strong></p>
+            {% if user.is_administrador %}
                 <div class="d-flex flex-wrap gap-2 mb-3">
                     <a class="botao" href="{% url 'usuario_novo' %}">Cadastrar usuário</a>
                     <a class="botao" href="{% url 'grupo_novo' %}">Cadastrar grupo</a>
                     <a class="botao" href="{% url 'usuarios_lista' %}">Gerenciar usuários</a>
                     <a class="botao" href="{% url 'grupos_lista' %}">Gerenciar grupos</a>
                 </div>
+            {% elif user.is_colaborador %}
+                <p>Você está acessando o ambiente da equipe da clínica.</p>
+                <a class="botao" href="{% url 'usuarios_lista' %}">Usuários da minha clínica</a>
+            {% elif user.is_paciente %}
+                <p>Você está acessando sua área de paciente.</p>
             {% endif %}
             <a class="botao" href="{% url 'logout' %}">Sair</a>
         {% else %}
