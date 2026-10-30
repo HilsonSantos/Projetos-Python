@@ -53,7 +53,8 @@ def logout_view(request):
 @staff_member_required
 def usuarios_lista(request):
     busca = request.GET.get("busca", "").strip()
-    usuarios = User.objects.all().order_by("username")
+    donos = Empresa.objects.values_list("usuario_id", flat=True)
+    usuarios = User.objects.exclude(pk__in=donos).exclude(is_superuser=True).order_by("username")
     if busca:
         usuarios = (
             usuarios.filter(username__icontains=busca)
