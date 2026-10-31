@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from .forms import GrupoForm, LoginForm, PacienteCadastroForm, UsuarioCreateForm, UsuarioUpdateForm
@@ -102,13 +103,17 @@ def logout_view(request):
 @administrador_ou_colaborador_required
 def usuarios_lista(request):
     busca = request.GET.get("busca", "").strip()
-    donos = Empresa.objects.values_list("usuario_id", flat=True)
-    usuarios = User.objects.exclude(pk__in=donos).exclude(is_superuser=True).order_by("username")
-    usuarios = User.objects.all().order_by("username")
+    usuarios = (
+        User
+        .objects
+        .exclude(tipo="A")
+        .order_by("username")
+    )
 
     if not request.user.is_administrador:
-        if request.user.empresa_id:
-            usuarios = usuarios.filter(empresa_id=request.user.empresa_id)
+        empresa = request.user.empresa or request.user.empresas.first()
+        if empresa:
+            usuarios = usuarios.filter(Q(empresa_id=empresa.pk) | Q(empresas__id=empresa.pk)).distinct()
         else:
             usuarios = usuarios.none()
 
