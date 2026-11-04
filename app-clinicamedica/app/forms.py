@@ -103,16 +103,20 @@ class UsuarioCreateForm(UserCreationForm):
     def clean(self):
         cleaned_data = super().clean()
         if (
+            "empresa" in self.fields
+            and
             cleaned_data.get("tipo") != User.Tipo.ADMINISTRADOR
             and not cleaned_data.get("empresa")
         ):
             self.add_error("empresa", "Informe a empresa para este tipo de usuário.")
+        if cleaned_data.get("tipo") == User.Tipo.COLABORADOR and not cleaned_data.get("profissao"):
+            self.add_error("profissao", "Informe o tipo de profissional do colaborador.")
         return cleaned_data
 
     class Meta:
         model = User
         fields = (
-            "username", "first_name", "last_name", "email", "telefone", "whatsapp", "tipo", "empresa", "is_active",
+            "username", "first_name", "last_name", "email", "telefone", "whatsapp", "tipo", "profissao", "empresa", "is_active",
             "is_staff", "is_superuser", "groups", "user_permissions",
         )
 
@@ -124,7 +128,7 @@ class UsuarioUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = (
-            "username", "first_name", "last_name", "email", "telefone", "whatsapp", "tipo", "empresa", "is_active",
+            "username", "first_name", "last_name", "email", "telefone", "whatsapp", "tipo", "profissao", "empresa", "is_active",
             "is_staff", "is_superuser", "groups", "user_permissions",
         )
 
@@ -143,10 +147,14 @@ class UsuarioUpdateForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         if (
+            "empresa" in self.fields
+            and
             cleaned_data.get("tipo") != User.Tipo.ADMINISTRADOR
             and not cleaned_data.get("empresa")
         ):
             self.add_error("empresa", "Informe a empresa para este tipo de usuário.")
+        if cleaned_data.get("tipo") == User.Tipo.COLABORADOR and not cleaned_data.get("profissao"):
+            self.add_error("profissao", "Informe o tipo de profissional do colaborador.")
         senha = cleaned_data.get("nova_senha")
         confirmacao = cleaned_data.get("confirmar_senha")
         if senha != confirmacao:

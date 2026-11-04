@@ -39,7 +39,7 @@ def administrador_ou_colaborador_required(view_func):
     @wraps(view_func)
     @login_required
     def wrapped(request, *args, **kwargs):
-        if not (request.user.is_administrador or request.user.is_colaborador):
+        if not request.user.pode_gerenciar_usuarios_grupos:
             raise PermissionDenied
         return view_func(request, *args, **kwargs)
 
@@ -53,6 +53,7 @@ def dono_app_required(view_func):
         if not usuario_e_dono_app(request.user):
             raise PermissionDenied
         return view_func(request, *args, **kwargs)
+
     return wrapped
 
 def home(request):
@@ -62,7 +63,13 @@ def home(request):
     empresa = None
 
     if request.session.get("empresa_id"):
-        empresa = Empresa.objects.filter(pk=request.session["empresa_id"]).first()
+        empresa = (
+            Empresa
+            .objects
+            .filter(pk=request.session["empresa_id"])
+            .first()
+        )
+
         if (
             empresa
             and not usuario_e_dono_app(request.user)
@@ -73,78 +80,12 @@ def home(request):
             request.session.pop("empresa_hash", None)
             request.session.pop("empresa_slug", None)
             empresa = None
-    dados = {"empresa": empresa}
-    return render(request, "home.html", dados)
 
-
-@login_required
-def empresa_nova(request):
-    if not usuario_e_dono_app(request.user):
-        raise PermissionDenied
-    form = EmpresaCadastroForm(request.POST or None)
-    if form.is_valid():
-        empresa = form.save(commit=False)
-        empresa.usuario = request.user
-        empresa.save()
-        return redirect("empresas_lista")
-    return render(request, "empresas/form.html", {"form": form})
-
-
-@login_required
-def empresas_lista(request):
-    if not usuario_e_dono_app(request.user):
-        raise PermissionDenied
-    empresas = Empresa.objects.select_related("usuario").order_by("razao_social")
-    return render(request, "empresas/lista.html", {"empresas": empresas})
-
-
-@login_required
-def empresa_editar(request, pk):
-    if not usuario_e_dono_app(request.user):
-        raise PermissionDenied
-    empresa = get_object_or_404(Empresa, pk=pk)
-    form = EmpresaCadastroForm(request.POST or None, instance=empresa)
-    if form.is_valid():
-        form.save()
-        return redirect("empresas_lista")
-    return render(request, "empresas/form.html", {"form": form, "empresa": empresa})
-
-
-@login_required
-def empresa_excluir(request, pk):
-    if not usuario_e_dono_app(request.user):
-        raise PermissionDenied
-    empresa = get_object_or_404(Empresa, pk=pk)
-    if request.method == "POST":
-        empresa.delete()
-        return redirect("empresas_lista")
-    return render(request, "empresas/excluir.html", {"empresa": empresa})
-
-
-def empresa_acesso(request, slug):
-    """Seleciona a empresa pelo nome legível ou por links antigos com hash."""
-    empresa = Empresa.objects.filter(slug=slug).first()
-    if empresa is None:
-        empresa = Empresa.objects.filter(slug__iexact=slug).first()
-
-    if empresa is None and slug.isdigit():
-        empresa = Empresa.objects.filter(pk=slug).first()
-
-    if empresa is None:
-        raise Http404("A empresa informada não existe ou não está cadastrada.")
-
-    if request.user.is_authenticated and not usuario_e_dono_app(request.user):
-        pertence_empresa = (
-            request.user.empresa_id == empresa.pk
-            or empresa.usuario_id == request.user.pk
-        )
-        if not pertence_empresa:
-            raise PermissionDenied("Este usuário não pertence à empresa selecionada.")
-
-    request.session["empresa_id"] = empresa.pk
-    request.session["empresa_slug"] = empresa.slug
-    return redirect("home" if request.user.is_authenticated else "login")
-
+    return render(
+        request,
+        "home.html",
+        {"empresa": empresa}
+    )
 
 def login_view(request):
     form = LoginForm(
@@ -160,20 +101,31 @@ def login_view(request):
         empresa = Empresa.objects.filter(slug__iexact=identificador_empresa).first()
         if empresa is None:
             form.add_error("empresa", "Não encontramos uma empresa com esse link ou identificador.")
-            return render(request, "login.html", {"form": form})
+            return render(
+                request,
+                "login.html",
+                {"form": form}
+            )
 
         pertence_empresa = usuario.empresa_id == empresa.pk or empresa.usuario_id == usuario.pk
         if not usuario_e_dono_app(usuario) and not pertence_empresa:
             form.add_error(None, "Este usuário não pertence à empresa informada.")
-            return render(request, "login.html", {"form": form})
+            return render(
+                request,
+                "login.html",
+                {"form": form}
+            )
 
         login(request, usuario)
         request.session["empresa_id"] = empresa.pk
         request.session["empresa_hash"] = empresa.identificador_hash
         request.session["empresa_slug"] = empresa.slug
         return redirect("home")
-    dados = {"form": form}
-    return render(request, "login.html", dados)
+    return render(
+        request,
+        "login.html",
+        {"form": form}
+    )
 
 
 def cadastro_paciente(request):
@@ -248,10 +200,169 @@ def esqueci_senha(request):
             except (WhatsAppNaoConfigurado, FalhaEnvioWhatsApp):
                 erro_envio = True
         # A mesma resposta é mostrada para contas inexistentes, sem vínculo ou sem WhatsApp.
-    return render(request, "registration/esqueci_senha.html", {
-        "form": form, "enviado": enviado, "erro_envio": erro_envio, "processado": processado,
-    })
+    return render(
+        request,
+        "registration/esqueci_senha.html",
+        {
+            "form": form,
+            "enviado": enviado,
+            "erro_envio": erro_envio,
+            "processado": processado,
+        }
+    )
 
+
+@login_required
+def empresa_nova(request):
+    if not usuario_e_dono_app(request.user):
+        raise PermissionDenied
+
+    form = EmpresaCadastroForm(request.POST or None)
+
+    if form.is_valid():
+        empresa = form.save(commit=False)
+        empresa.usuario = request.user
+        empresa.save()
+        return redirect("empresas_lista")
+
+    return render(
+        request,
+        "empresas/form.html",
+        {"form": form}
+    )
+
+
+@login_required
+def empresas_lista(request):
+    if not usuario_e_dono_app(request.user):
+        raise PermissionDenied
+    empresas = (
+        Empresa
+        .objects
+        .select_related("usuario")
+        .order_by("razao_social")
+    )
+    return render(
+        request,
+        "empresas/lista.html",
+        {"empresas": empresas}
+    )
+
+
+@login_required
+def empresa_editar(request, pk):
+    if not usuario_e_dono_app(request.user):
+        raise PermissionDenied
+    empresa = get_object_or_404(Empresa, pk=pk)
+    form = EmpresaCadastroForm(request.POST or None, instance=empresa)
+    if form.is_valid():
+        form.save()
+        return redirect("empresas_lista")
+    return render(
+        request,
+        "empresas/form.html",
+        {"form": form, "empresa": empresa}
+    )
+
+
+@login_required
+def empresa_excluir(request, pk):
+    if not usuario_e_dono_app(request.user):
+        raise PermissionDenied
+    empresa = get_object_or_404(Empresa, pk=pk)
+    if request.method == "POST":
+        empresa.delete()
+        return redirect("empresas_lista")
+    return render(
+        request,
+        "empresas/excluir.html",
+        {"empresa": empresa}
+    )
+
+
+def empresa_acesso(request, slug):
+    """Seleciona a empresa pelo nome legível ou por links antigos com hash."""
+    empresa = Empresa.objects.filter(slug=slug).first()
+    if empresa is None:
+        empresa = (
+            Empresa
+            .objects
+            .filter(slug__iexact=slug)
+            .first()
+        )
+
+    if empresa is None and slug.isdigit():
+        empresa = (
+            Empresa
+            .objects
+            .filter(pk=slug)
+            .first()
+        )
+
+    if empresa is None:
+        raise Http404("A empresa informada não existe ou não está cadastrada.")
+
+    if request.user.is_authenticated and not usuario_e_dono_app(request.user):
+        pertence_empresa = (
+            request.user.empresa_id == empresa.pk
+            or empresa.usuario_id == request.user.pk
+        )
+        if not pertence_empresa:
+            raise PermissionDenied("Este usuário não pertence à empresa selecionada.")
+
+    request.session["empresa_id"] = empresa.pk
+    request.session["empresa_slug"] = empresa.slug
+    return redirect("home" if request.user.is_authenticated else "login")
+
+
+@administrador_ou_colaborador_required
+def grupos_lista(request):
+    grupos = Group.objects.prefetch_related("permissions").order_by("name")
+    return render(
+        request,
+        "grupos/lista.html",
+        {"grupos": grupos}
+    )
+
+
+@administrador_ou_colaborador_required
+def grupo_novo(request):
+    form = GrupoForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect("grupos_lista")
+    return render(
+        request,
+        "grupos/form.html",
+        {"form": form, "titulo": "Novo grupo"}
+    )
+
+
+@administrador_ou_colaborador_required
+def grupo_editar(request, pk):
+    grupo = get_object_or_404(Group, pk=pk)
+    form = GrupoForm(request.POST or None, instance=grupo)
+    if form.is_valid():
+        form.save()
+        return redirect("grupos_lista")
+    return render(
+        request,
+        "grupos/form.html",
+        {"form": form, "titulo": "Editar grupo", "grupo": grupo}
+    )
+
+
+@administrador_ou_colaborador_required
+def grupo_excluir(request, pk):
+    grupo = get_object_or_404(Group, pk=pk)
+    if request.method == "POST":
+        grupo.delete()
+        return redirect("grupos_lista")
+    return render(
+        request,
+        "grupos/excluir.html",
+        {"grupo": grupo}
+    )
 
 @administrador_ou_colaborador_required
 def usuarios_lista(request):
@@ -265,6 +376,11 @@ def usuarios_lista(request):
 
         if empresa_id else User.objects.none()
     )
+    if not usuario_e_dono_app(request.user):
+        usuarios = (
+            usuarios
+            .exclude(username__iexact="ADMIN")
+        )
     usuarios = usuarios.order_by("username")
 
     if busca:
@@ -274,74 +390,63 @@ def usuarios_lista(request):
             usuarios.filter(last_name__icontains=busca) |
             usuarios.filter(email__icontains=busca)
         )
-    dados = {"usuarios": usuarios, "busca": busca}
-    return render(request, "usuarios/lista.html", dados)
+    return render(
+        request,
+        "usuarios/lista.html",
+        {"usuarios": usuarios, "busca": busca}
+    )
 
 
 @administrador_ou_colaborador_required
 def usuario_novo(request):
     form = UsuarioCreateForm(request.POST or None)
+    if request.user.is_colaborador:
+        form.fields.pop("empresa", None)
     if form.is_valid():
-        form.save()
+        usuario = form.save(commit=False)
+        if request.user.is_colaborador:
+            usuario.empresa_id = request.session.get("empresa_id")
+        usuario.save()
+        form.save_m2m()
         return redirect("usuarios_lista")
-    dados = {"form": form, "titulo": "Novo usuário"}
-    return render(request, "usuarios/form.html", dados)
+    return render(
+        request,
+        "usuarios/form.html",
+        {"form": form, "titulo": "Novo usuário"}
+    )
 
 
 @administrador_ou_colaborador_required
 def usuario_editar(request, pk):
     usuario = get_object_or_404(User, pk=pk)
+
+    if request.user.is_colaborador and usuario.empresa_id != request.session.get("empresa_id"):
+        raise Http404
+
     form = UsuarioUpdateForm(request.POST or None, instance=usuario)
+    if request.user.is_colaborador:
+        form.fields.pop("empresa", None)
+
     if form.is_valid():
         form.save()
         return redirect("usuarios_lista")
-    dados = {"form": form, "titulo": "Editar usuário", "usuario": usuario}
-    return render(request, "usuarios/form.html", dados)
 
+    return render(
+        request,
+        "usuarios/form.html",
+        {"form": form, "titulo": "Editar usuário", "usuario": usuario}
+    )
 
 @administrador_ou_colaborador_required
 def usuario_excluir(request, pk):
     usuario = get_object_or_404(User, pk=pk)
+
     if request.method == "POST":
         usuario.delete()
         return redirect("usuarios_lista")
-    dados = {"usuario": usuario}
-    return render(request, "usuarios/excluir.html", dados)
 
-
-@administrador_ou_colaborador_required
-def grupos_lista(request):
-    grupos = Group.objects.prefetch_related("permissions").order_by("name")
-    dados = {"grupos": grupos}
-    return render(request, "grupos/lista.html", dados)
-
-
-@administrador_ou_colaborador_required
-def grupo_novo(request):
-    form = GrupoForm(request.POST or None)
-    if form.is_valid():
-        form.save()
-        return redirect("grupos_lista")
-    dados = {"form": form, "titulo": "Novo grupo"}
-    return render(request, "grupos/form.html", dados)
-
-
-@administrador_ou_colaborador_required
-def grupo_editar(request, pk):
-    grupo = get_object_or_404(Group, pk=pk)
-    form = GrupoForm(request.POST or None, instance=grupo)
-    if form.is_valid():
-        form.save()
-        return redirect("grupos_lista")
-    dados = {"form": form, "titulo": "Editar grupo", "grupo": grupo}
-    return render(request, "grupos/form.html", dados)
-
-
-@administrador_ou_colaborador_required
-def grupo_excluir(request, pk):
-    grupo = get_object_or_404(Group, pk=pk)
-    if request.method == "POST":
-        grupo.delete()
-        return redirect("grupos_lista")
-    dados = {"grupo": grupo}
-    return render(request, "grupos/excluir.html", dados)
+    return render(
+        request,
+        "usuarios/excluir.html",
+        {"usuario": usuario}
+    )

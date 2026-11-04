@@ -18,6 +18,7 @@
                 <th>Nome</th>
                 <th>E-mail</th>
                 <th>Perfil</th>
+                <th>Profissão</th>
                 <th>Status</th>
                 <th>Ações</th>
             </tr>
@@ -29,6 +30,7 @@
                     <td>{{ usuario.get_full_name|default:"—" }}</td>
                     <td>{{ usuario.email|default:"—" }}</td>
                     <td>{{ usuario.get_tipo_display }}</td>
+                    <td>{{ usuario.get_profissao_display|default:"—" }}</td>
                     <td>
                         {% if usuario.is_active %}
                             Ativo
@@ -47,7 +49,7 @@
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="6">Nenhum usuário encontrado.</td>
+                    <td colspan="7">Nenhum usuário encontrado.</td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -52,10 +52,12 @@ class UserAdmin(DjangoUserAdmin):
     inlines = (EmpresaInline,)
     fieldsets = DjangoUserAdmin.fieldsets + (
         ("Contato", {"fields": ("telefone", "whatsapp")}),
+        ("Atuação profissional", {"fields": ("profissao",)}),
         ("Vínculo com a empresa", {"fields": ("empresa",)}),
     )
     add_fieldsets = DjangoUserAdmin.add_fieldsets + (
         ("Contato", {"fields": ("telefone", "whatsapp")}),
+        ("Atuação profissional", {"fields": ("profissao",)}),
         ("Vínculo com a empresa", {"fields": ("empresa",)}),
     )
     list_display = ("username", "email", "first_name", "last_name", "tipo", "empresa", "is_staff", "empresa_vinculada")

@@ -59,10 +59,14 @@
                 <label for="{{ form.tipo.id_for_label }}">Tipo de usuário</label>
                 {{ form.tipo }}{{ form.tipo.errors }}
             </p>
-            <p>
+            <p id="campo-profissao" hidden>
+                <label for="{{ form.profissao.id_for_label }}">Tipo de profissional</label>
+                {{ form.profissao }}{{ form.profissao.errors }}
+            </p>
+            {% if form.empresa %}<p>
                 <label for="{{ form.empresa.id_for_label }}">Empresa</label>
                 {{ form.empresa }}{{ form.empresa.errors }}
-            </p>
+            </p>{% endif %}
         </fieldset>
         <fieldset class="mb-4">
             <legend class="h5">Status e permissões</legend>
@@ -90,4 +94,16 @@
         <button class="btn btn-primary" type="submit">Salvar</button>
         <a href="{% url 'usuarios_lista' %}">Cancelar</a>
     </form>
+    <script>
+        const tipoUsuario = document.getElementById("{{ form.tipo.id_for_label }}");
+        const campoProfissao = document.getElementById("campo-profissao");
+        const profissao = document.getElementById("{{ form.profissao.id_for_label }}");
+        function atualizarProfissao() {
+            const colaborador = tipoUsuario.value === "C";
+            campoProfissao.hidden = !colaborador;
+            profissao.required = colaborador;
+        }
+        tipoUsuario.addEventListener("change", atualizarProfissao);
+        atualizarProfissao();
+    </script>
 {% endblock %}

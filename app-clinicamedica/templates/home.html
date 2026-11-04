@@ -1,60 +1,77 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clínica Médica</title>
-    <style>
-        .botao {
-            background: #0d6efd;
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            color: white;
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
-    <main>
-        <h1>Clínica Médica</h1>
+{% extends "base.html" %}
+
+{% block title %}Início | Clínica Médica{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary shadow-sm mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-semibold" href="{% url 'home' %}">Clínica Médica</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+                aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="{% url 'home' %}">Início</a></li>
+                {% if user.is_superuser and user.tipo == 'A' %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'empresas_lista' %}">Empresas</a></li>
+                {% endif %}
+                {% if user.pode_gerenciar_usuarios_grupos %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'usuarios_lista' %}">Usuários</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'grupos_lista' %}">Grupos</a></li>
+                {% endif %}
+            </ul>
+            <div class="d-flex align-items-center gap-3">
+                <span class="navbar-text">{{ user.get_full_name|default:user.username }} · {{ user.get_tipo_display }}</span>
+                <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}">Sair</a>
+            </div>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<section class="p-4 p-md-5 mb-4 rounded-3 bg-body-tertiary border border-secondary-subtle">
+    <div class="container-fluid py-2">
+        <p class="text-uppercase text-primary fw-semibold small mb-2">Painel da clínica</p>
         {% if empresa %}
-            <p>Empresa selecionada: <strong>{{ empresa.razao_social }}</strong></p>
-            <p>Endereço de acesso: <code>/empresa/{{ empresa.identificador_hash }}/</code></p>
+            <h1 class="display-6 fw-semibold">{{ empresa.nome_fantasia|default:empresa.razao_social }}</h1>
+            <p class="lead mb-2">Você está no ambiente de {{ empresa.razao_social }}.</p>
+            <p class="mb-0">Acesso da empresa: <a href="{% url 'empresa_acesso' empresa.slug %}">/{{ empresa.slug }}/</a></p>
         {% else %}
-            {% if user.is_administrador %}
-                <p>Acesso global do administrador da aplicação. Nenhuma empresa precisa ser identificada.</p>
+            <h1 class="display-6 fw-semibold">Bem-vindo, {{ user.first_name|default:user.username }}</h1>
+            {% if user.is_superuser and user.tipo == 'A' %}
+                <p class="lead mb-0">Acesso do dono do app. Selecione uma área pelo menu.</p>
             {% else %}
-                <p>Bem-vindo à nossa clínica.</p>
+                <p class="lead mb-0">Nenhuma empresa está selecionada para esta sessão.</p>
             {% endif %}
         {% endif %}
-        {% if user.is_authenticated %}
-            <p>Perfil: <strong>{{ user.get_tipo_display }}</strong></p>
-            {% if user.is_administrador %}
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                    {% if user.is_superuser and user.tipo == 'A' %}
-                        <a class="botao" href="{% url 'empresas_lista' %}">Gerenciar empresas</a>
-                    {% endif %}
-                    {% if user.is_administrador %}
-                        <a class="botao" href="{% url 'usuarios_lista' %}">Gerenciar usuários</a>
-                        <a class="botao" href="{% url 'grupos_lista' %}">Gerenciar grupos</a>
-                    {% endif %}
-                </div>
-            {% elif user.is_colaborador %}
-                <p>Você está acessando o ambiente da equipe da clínica.</p>
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                    <a class="botao" href="{% url 'usuarios_lista' %}">Gerenciar usuários</a>
-                    <a class="botao" href="{% url 'grupos_lista' %}">Gerenciar grupos</a>
-                </div>
-            {% elif user.is_paciente %}
-                <p>Você está acessando sua área de paciente.</p>
-            {% endif %}
-            <a class="botao" href="{% url 'logout' %}">Sair</a>
-        {% else %}
-            <a class="botao" href="{% url 'login' %}">Entrar</a>
-            <a class="botao" href="{% url 'cadastro_paciente' %}">Cadastre-se como paciente</a>
-        {% endif %}
-    </main>
-</body>
-</html>
+    </div>
+</section>
+
+{% if user.pode_gerenciar_usuarios_grupos or user.is_superuser and user.tipo == 'A' %}
+<div class="row g-3 mb-4">
+    {% if user.is_superuser and user.tipo == 'A' %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <a class="card dashboard-card text-decoration-none" href="{% url 'empresas_lista' %}">
+            <div class="card-body"><h2 class="h5">Empresas</h2><p class="text-body-secondary mb-0">Cadastre e gerencie as empresas.</p></div>
+        </a>
+    </div>
+    {% endif %}
+    {% if user.pode_gerenciar_usuarios_grupos %}
+    <div class="col-12 col-md-6 col-xl-4">
+        <a class="card dashboard-card text-decoration-none" href="{% url 'usuarios_lista' %}">
+            <div class="card-body"><h2 class="h5">Usuários</h2><p class="text-body-secondary mb-0">Consulte e gerencie os usuários da empresa.</p></div>
+        </a>
+    </div>
+    <div class="col-12 col-md-6 col-xl-4">
+        <a class="card dashboard-card text-decoration-none" href="{% url 'grupos_lista' %}">
+            <div class="card-body"><h2 class="h5">Grupos</h2><p class="text-body-secondary mb-0">Gerencie grupos e permissões.</p></div>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% elif user.is_paciente %}
+<div class="alert alert-info">Você está acessando sua área de paciente.</div>
+{% endif %}
+{% endblock %}

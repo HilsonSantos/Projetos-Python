@@ -12,6 +12,14 @@
             .card {
                 width: 75% !important;
             }
+            .dashboard-card {
+                width: 100% !important;
+                transition: border-color .15s ease, transform .15s ease;
+            }
+            .dashboard-card:hover {
+                border-color: var(--bs-primary) !important;
+                transform: translateY(-2px);
+            }
         </style>
     </head>
         <body class="bg-body text-body">
@@ -25,5 +33,6 @@
             <main class="container {% block main_class %}{% endblock %}">
                 {% block content %}{% endblock %}
             </main>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         </body>
 </html>

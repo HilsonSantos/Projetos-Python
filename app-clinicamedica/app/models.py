@@ -26,6 +26,18 @@ class Usuario(AbstractUser):
         COLABORADOR = "C", "Colaborador"
         PACIENTE = "P", "Paciente"
 
+    class Profissao(models.TextChoices):
+        MEDICO = "MED", "Médico(a)"
+        RECEPCIONISTA = "REC", "Recepcionista"
+        ENFERMEIRO = "ENF", "Enfermeiro(a)"
+        TECNICO_ENFERMAGEM = "TENF", "Técnico(a) de enfermagem"
+        PSICOLOGO = "PSI", "Psicólogo(a)"
+        FISIOTERAPEUTA = "FIS", "Fisioterapeuta"
+        DENTISTA = "DEN", "Dentista"
+        NUTRICIONISTA = "NUT", "Nutricionista"
+        FARMACEUTICO = "FAR", "Farmacêutico(a)"
+        OUTRO = "OUT", "Outro"
+
     tipo = models.CharField(
         "tipo de usuário",
         max_length=20,
@@ -42,6 +54,7 @@ class Usuario(AbstractUser):
     )
     telefone = models.CharField("telefone", max_length=20, blank=True)
     whatsapp = models.CharField("WhatsApp", max_length=20, blank=True)
+    profissao = models.CharField("tipo de profissional", max_length=10, choices=Profissao.choices, blank=True)
 
     @property
     def is_administrador(self):
@@ -55,6 +68,12 @@ class Usuario(AbstractUser):
     @property
     def is_paciente(self):
         return self.tipo == self.Tipo.PACIENTE
+
+    @property
+    def pode_gerenciar_usuarios_grupos(self):
+        dono_app = self.is_superuser and self.tipo == self.Tipo.ADMINISTRADOR
+        colaborador_autorizado = self.tipo == self.Tipo.COLABORADOR and self.is_staff
+        return dono_app or colaborador_autorizado
 
     class Meta:
         db_table = "usuarios"
