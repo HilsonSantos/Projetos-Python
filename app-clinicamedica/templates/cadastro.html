@@ -10,6 +10,9 @@
                     <p class="text-body-secondary mb-4">Crie seu acesso à Clínica Médica.</p>
                     <form method="post" novalidate>
                         {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+                        {% endif %}
                         {% for field in form %}
                             <div class="mb-3">
                                 <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>

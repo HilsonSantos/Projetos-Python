@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-12 col-md-8 col-lg-5">
+    <div class="card card-body">
+        {% if validlink %}
+            <h1 class="h4">Definir nova senha</h1>
+            {% if request.GET.empresa %}
+                <div class="mb-3">
+                    <label class="form-label" for="identificador-empresa">Identificador da empresa</label>
+                    <input id="identificador-empresa" class="form-control" value="{{ request.GET.empresa }}" readonly>
+                </div>
+            {% endif %}
+            <form method="post">{% csrf_token %}
+                {% for field in form %}<div class="mb-3"><label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}
+                <button class="btn btn-primary" type="submit">Salvar nova senha</button>
+            </form>
+        {% else %}
+            <p>Este link de redefinição expirou ou já foi utilizado.</p>
+        {% endif %}
+    </div>
+</div></div>
+{% endblock %}

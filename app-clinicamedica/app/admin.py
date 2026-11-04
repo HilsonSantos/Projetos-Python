@@ -1,11 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth import get_user_model
-
 from .models import Empresa
 
 User = get_user_model()
-
 
 class EmpresaInline(admin.StackedInline):
     model = Empresa
@@ -17,7 +15,6 @@ class EmpresaInline(admin.StackedInline):
         ("Endereço", {"fields": (("cep", "estado"), ("logradouro", "numero", "complemento"), ("bairro", "cidade"))}),
         ("Licença", {"fields": (("plano_licenca", "status_licenca"), ("inicio_licenca", "fim_licenca"), "observacoes")}),
     )
-
 
 @admin.register(Empresa)
 class EmpresaAdmin(admin.ModelAdmin):
@@ -31,6 +28,12 @@ class EmpresaAdmin(admin.ModelAdmin):
     fieldsets = EmpresaInline.fieldsets
     actions = ("ativar_licencas", "suspender_licencas")
 
+    def save_model(self, request, obj, form, change):
+        # A empresa criada pelo painel pertence ao usuário dono da sessão.
+        if not obj.usuario_id:
+            obj.usuario = request.user
+        super().save_model(request, obj, form, change)
+
     @admin.action(description="Ativar licenças selecionadas")
     def ativar_licencas(self, request, queryset):
         queryset.update(status_licenca=Empresa.StatusLicenca.ATIVA)
@@ -38,8 +41,6 @@ class EmpresaAdmin(admin.ModelAdmin):
     @admin.action(description="Suspender licenças selecionadas")
     def suspender_licencas(self, request, queryset):
         queryset.update(status_licenca=Empresa.StatusLicenca.SUSPENSA)
-
-
 try:
     admin.site.unregister(User)
 except admin.sites.NotRegistered:
@@ -49,8 +50,14 @@ except admin.sites.NotRegistered:
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
     inlines = (EmpresaInline,)
-    fieldsets = DjangoUserAdmin.fieldsets + (("Vínculo com a empresa", {"fields": ("empresa",)}),)
-    add_fieldsets = DjangoUserAdmin.add_fieldsets + (("Vínculo com a empresa", {"fields": ("empresa",)}),)
+    fieldsets = DjangoUserAdmin.fieldsets + (
+        ("Contato", {"fields": ("telefone", "whatsapp")}),
+        ("Vínculo com a empresa", {"fields": ("empresa",)}),
+    )
+    add_fieldsets = DjangoUserAdmin.add_fieldsets + (
+        ("Contato", {"fields": ("telefone", "whatsapp")}),
+        ("Vínculo com a empresa", {"fields": ("empresa",)}),
+    )
     list_display = ("username", "email", "first_name", "last_name", "tipo", "empresa", "is_staff", "empresa_vinculada")
     list_filter = ("is_staff", "is_superuser", "is_active", "groups")
     search_fields = ("username", "first_name", "last_name", "email", "empresa__razao_social")

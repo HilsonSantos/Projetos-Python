@@ -23,6 +23,20 @@
                         {% csrf_token %}
 
                         <div class="mb-3">
+                            <label for="{{ form.empresa.id_for_label }}" class="form-label">identificador da empresa</label>
+                            <input
+                                type="text"
+                                name="{{ form.empresa.html_name }}"
+                                id="{{ form.empresa.id_for_label }}"
+                                class="form-control{% if form.empresa.errors %} is-invalid{% endif %}"
+                                value="{{ form.empresa.value|default:'' }}"
+                                placeholder="clinicamedica0001"
+                                required
+                            >
+                            {% for error in form.empresa.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+
+                        <div class="mb-3">
                             <label for="{{ form.username.id_for_label }}" class="form-label">Usuário</label>
                             <input
                                 type="text"
@@ -59,7 +73,7 @@
                         </div>
 
                         <div class="d-flex justify-content-center mt-3 small">
-                            <a href="#" class="link-light text-decoration-none">Esqueci minha senha</a>
+                            <a href="{% url 'esqueci_senha' %}" class="link-light text-decoration-none">Esqueci minha senha</a>
                         </div>
 
                         <div class="d-flex justify-content-center mt-3 small">

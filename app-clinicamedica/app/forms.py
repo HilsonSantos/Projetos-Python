@@ -3,18 +3,52 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import AuthenticationForm
+from .models import Empresa
 
 User = get_user_model()
 
 class LoginForm(AuthenticationForm):
-    pass
+    empresa = forms.CharField(
+        label="Link ou identificador da empresa",
+        required=True,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "clinicamedica0001"}),
+    )
+
+
+class EsqueciSenhaForm(forms.Form):
+    empresa = forms.CharField(
+        label="Link ou identificador da empresa",
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "clinicamedica0001"}),
+    )
+    username = forms.CharField(label="Usuário", widget=forms.TextInput(attrs={"class": "form-control"}))
+
+
+class EmpresaCadastroForm(forms.ModelForm):
+    class Meta:
+        model = Empresa
+        fields = (
+            "razao_social", "nome_fantasia", "cnpj", "inscricao_estadual",
+            "email", "telefone", "website", "responsavel_nome", "responsavel_cargo",
+            "cep", "logradouro", "numero", "complemento", "bairro", "cidade", "estado",
+            "plano_licenca", "status_licenca", "inicio_licenca", "fim_licenca", "observacoes",
+        )
+        widgets = {
+            "inicio_licenca": forms.DateInput(attrs={"type": "date"}),
+            "fim_licenca": forms.DateInput(attrs={"type": "date"}),
+            "observacoes": forms.Textarea(attrs={"rows": 3}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs["class"] = "form-control"
 
 
 class PacienteCadastroForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ("username", "first_name", "last_name", "email")
-        labels = {"username": "Usuário", "first_name": "Nome", "last_name": "Sobrenome", "email": "E-mail"}
+        fields = ("username", "first_name", "last_name", "email", "telefone", "whatsapp")
+        labels = {"username": "Usuário", "first_name": "Nome", "last_name": "Sobrenome", "email": "E-mail", "telefone": "Telefone", "whatsapp": "WhatsApp"}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -78,7 +112,7 @@ class UsuarioCreateForm(UserCreationForm):
     class Meta:
         model = User
         fields = (
-            "username", "first_name", "last_name", "email", "tipo", "empresa", "is_active",
+            "username", "first_name", "last_name", "email", "telefone", "whatsapp", "tipo", "empresa", "is_active",
             "is_staff", "is_superuser", "groups", "user_permissions",
         )
 
@@ -90,7 +124,7 @@ class UsuarioUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = (
-            "username", "first_name", "last_name", "email", "tipo", "empresa", "is_active",
+            "username", "first_name", "last_name", "email", "telefone", "whatsapp", "tipo", "empresa", "is_active",
             "is_staff", "is_superuser", "groups", "user_permissions",
         )
 

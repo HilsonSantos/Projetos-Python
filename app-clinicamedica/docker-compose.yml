@@ -36,6 +36,11 @@ services:
       PYTHONUNBUFFERED: "1"
       VIRTUAL_ENV: /opt/venv
       PATH: /opt/venv/bin:/usr/local/bin:/usr/bin:/bin
+      WHATSAPP_ACCESS_TOKEN: ${WHATSAPP_ACCESS_TOKEN:-}
+      WHATSAPP_PHONE_NUMBER_ID: ${WHATSAPP_PHONE_NUMBER_ID:-}
+      WHATSAPP_TEMPLATE_NAME: ${WHATSAPP_TEMPLATE_NAME:-}
+      WHATSAPP_TEMPLATE_LANGUAGE: ${WHATSAPP_TEMPLATE_LANGUAGE:-pt_BR}
+      WHATSAPP_API_VERSION: ${WHATSAPP_API_VERSION:-v26.0}
     command: sh -c "/opt/venv/bin/python manage.py migrate && /opt/venv/bin/python manage.py runserver 0.0.0.0:8000"
 
   pgadmin:

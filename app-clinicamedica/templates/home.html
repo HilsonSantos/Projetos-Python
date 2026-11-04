@@ -33,14 +33,20 @@
             <p>Perfil: <strong>{{ user.get_tipo_display }}</strong></p>
             {% if user.is_administrador %}
                 <div class="d-flex flex-wrap gap-2 mb-3">
-                    <a class="botao" href="{% url 'usuario_novo' %}">Cadastrar usuário</a>
-                    <a class="botao" href="{% url 'grupo_novo' %}">Cadastrar grupo</a>
-                    <a class="botao" href="{% url 'usuarios_lista' %}">Gerenciar usuários</a>
-                    <a class="botao" href="{% url 'grupos_lista' %}">Gerenciar grupos</a>
+                    {% if user.is_superuser and user.tipo == 'A' %}
+                        <a class="botao" href="{% url 'empresas_lista' %}">Gerenciar empresas</a>
+                    {% endif %}
+                    {% if user.is_administrador %}
+                        <a class="botao" href="{% url 'usuarios_lista' %}">Gerenciar usuários</a>
+                        <a class="botao" href="{% url 'grupos_lista' %}">Gerenciar grupos</a>
+                    {% endif %}
                 </div>
             {% elif user.is_colaborador %}
                 <p>Você está acessando o ambiente da equipe da clínica.</p>
-                <a class="botao" href="{% url 'usuarios_lista' %}">Usuários da minha clínica</a>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <a class="botao" href="{% url 'usuarios_lista' %}">Gerenciar usuários</a>
+                    <a class="botao" href="{% url 'grupos_lista' %}">Gerenciar grupos</a>
+                </div>
             {% elif user.is_paciente %}
                 <p>Você está acessando sua área de paciente.</p>
             {% endif %}

@@ -7,7 +7,7 @@
             <input class="form-control" name="busca" value="{{ busca }}" placeholder="Buscar usuário...">
             <button class="btn btn-secondary" type="submit">Buscar</button>
         </form>
-        {% if user.is_administrador %}
+        {% if user.is_administrador or user.is_colaborador %}
             <a class="btn btn-primary" href="{% url 'usuario_novo' %}">Novo usuário</a>
         {% endif %}
     </div>
@@ -37,9 +37,9 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if user.is_administrador %}
-                            <a href="{% url 'usuario_editar' usuario.pk %}">Editar</a>
-                            <a href="{% url 'usuario_excluir' usuario.pk %}">Excluir</a>
+                        {% if user.is_administrador or user.is_colaborador %}
+                            <a class="btn btn-sm btn-outline-primary" href="{% url 'usuario_editar' usuario.pk %}">Editar</a>
+                            <a class="btn btn-sm btn-outline-danger" href="{% url 'usuario_excluir' usuario.pk %}">Excluir</a>
                         {% else %}
                             <span class="text-body-secondary">Somente consulta</span>
                         {% endif %}
@@ -52,4 +52,5 @@
             {% endfor %}
         </tbody>
     </table>
+    <a class="btn btn-outline-secondary" href="{% url 'home' %}">Voltar</a>
 {% endblock %}

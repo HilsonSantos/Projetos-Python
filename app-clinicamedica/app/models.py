@@ -1,5 +1,7 @@
 import hashlib
+import re
 import uuid
+import unicodedata
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -11,8 +13,13 @@ def gerar_identificador_hash():
     return hashlib.sha256(uuid.uuid4().bytes).hexdigest()
 
 
+def gerar_slug_empresa(nome):
+    nome_normalizado = unicodedata.normalize("NFKD", nome).encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"[^a-z0-9]", "", nome_normalizado.lower())
+
+
 class Usuario(AbstractUser):
-    """Usuário da aplicação, armazenado na tabela app_usuario."""
+    """Usuário da aplicação, armazenado na tabela usuarios."""
 
     class Tipo(models.TextChoices):
         ADMINISTRADOR = "A", "Administrador"
@@ -33,6 +40,8 @@ class Usuario(AbstractUser):
         blank=True,
         verbose_name="empresa",
     )
+    telefone = models.CharField("telefone", max_length=20, blank=True)
+    whatsapp = models.CharField("WhatsApp", max_length=20, blank=True)
 
     @property
     def is_administrador(self):
@@ -48,7 +57,7 @@ class Usuario(AbstractUser):
         return self.tipo == self.Tipo.PACIENTE
 
     class Meta:
-        db_table = "app_usuario"
+        db_table = "usuarios"
         swappable = "AUTH_USER_MODEL"
         verbose_name = "usuário"
         verbose_name_plural = "usuários"
@@ -83,6 +92,7 @@ class Empresa(models.Model):
         default=gerar_identificador_hash,
         help_text="Identificador público e permanente da empresa.",
     )
+    slug = models.SlugField("nome para acesso", max_length=180, unique=True, blank=True)
     razao_social = models.CharField("razão social", max_length=200)
     nome_fantasia = models.CharField("nome fantasia", max_length=150, blank=True)
     cnpj = models.CharField("CNPJ", max_length=18, unique=True)
@@ -100,10 +110,16 @@ class Empresa(models.Model):
     cidade = models.CharField(max_length=100)
     estado = models.CharField(max_length=2)
     plano_licenca = models.CharField(
-        "plano da licença", max_length=20, choices=PlanoLicenca.choices, default=PlanoLicenca.BASICO
+        "plano da licença",
+        max_length=20,
+        choices=PlanoLicenca.choices,
+        default=PlanoLicenca.BASICO
     )
     status_licenca = models.CharField(
-        "status da licença", max_length=20, choices=StatusLicenca.choices, default=StatusLicenca.PENDENTE
+        "status da licença",
+        max_length=20,
+        choices=StatusLicenca.choices,
+        default=StatusLicenca.PENDENTE
     )
     inicio_licenca = models.DateField("início da licença", null=True, blank=True)
     fim_licenca = models.DateField("fim da licença", null=True, blank=True)
@@ -111,7 +127,19 @@ class Empresa(models.Model):
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = gerar_slug_empresa(self.nome_fantasia or self.razao_social) or "clinica"
+            slug = base_slug
+            sufixo = 2
+            while Empresa.objects.exclude(pk=self.pk).filter(slug=slug).exists():
+                slug = f"{base_slug}-{sufixo}"
+                sufixo += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
     class Meta:
+        db_table = "empresas"
         ordering = ["razao_social"]
         verbose_name = "empresa"
         verbose_name_plural = "empresas"

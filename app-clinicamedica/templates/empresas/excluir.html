@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card card-body">
+    <h1 class="h4">Excluir empresa</h1>
+    <p>Confirma a exclusão de <strong>{{ empresa.razao_social }}</strong>?</p>
+    <p class="text-warning">A operação não pode ser desfeita. Usuários vinculados poderão ficar sem empresa.</p>
+    <form method="post" class="d-flex gap-2">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">Confirmar exclusão</button>
+        <a class="btn btn-outline-secondary" href="{% url 'empresas_lista' %}">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

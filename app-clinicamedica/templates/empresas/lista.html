@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Empresas cadastradas</h1>
+    <a class="btn btn-primary" href="{% url 'empresa_nova' %}">Cadastrar empresa</a>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead><tr><th>Razão social</th><th>Nome fantasia</th><th>CNPJ</th><th>Responsável</th><th>Licença</th><th>Ações</th></tr></thead>
+        <tbody>
+        {% for empresa in empresas %}
+            <tr>
+                <td>{{ empresa.razao_social }}</td>
+                <td>{{ empresa.nome_fantasia|default:"—" }}</td>
+                <td>{{ empresa.cnpj }}</td>
+                <td>{{ empresa.responsavel_nome }}</td>
+                <td>{{ empresa.get_status_licenca_display }}</td>
+                <td class="text-nowrap">
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'empresa_editar' empresa.pk %}">Editar</a>
+                    <a class="btn btn-sm btn-outline-danger" href="{% url 'empresa_excluir' empresa.pk %}">Excluir</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'empresa_acesso' empresa.slug %}">Acessar</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="6" class="text-center py-4">Nenhuma empresa cadastrada.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<a class="btn btn-outline-secondary" href="{% url 'home' %}">Voltar</a>
+{% endblock %}

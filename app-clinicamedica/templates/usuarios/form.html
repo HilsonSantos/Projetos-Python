@@ -5,7 +5,7 @@
     <form method="post">
         {% csrf_token %}
         {% if form.non_field_errors %}
-            {{ form.non_field_errors }}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
         {% endif %}
         <fieldset class="mb-4">
             <legend class="h5">Dados de acesso</legend>
@@ -48,8 +48,20 @@
                 {{ form.email }}{{ form.email.errors }}
             </p>
             <p>
+                <label for="{{ form.telefone.id_for_label }}">Telefone</label>
+                {{ form.telefone }}{{ form.telefone.errors }}
+            </p>
+            <p>
+                <label for="{{ form.whatsapp.id_for_label }}">WhatsApp</label>
+                {{ form.whatsapp }}{{ form.whatsapp.errors }}
+            </p>
+            <p>
                 <label for="{{ form.tipo.id_for_label }}">Tipo de usuário</label>
                 {{ form.tipo }}{{ form.tipo.errors }}
+            </p>
+            <p>
+                <label for="{{ form.empresa.id_for_label }}">Empresa</label>
+                {{ form.empresa }}{{ form.empresa.errors }}
             </p>
         </fieldset>
         <fieldset class="mb-4">
