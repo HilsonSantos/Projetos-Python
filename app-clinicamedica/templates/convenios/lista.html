@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Convênios | Clínica Médica{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div><h1 class="h3 mb-1">Convênios</h1><p class="text-body-secondary mb-0">Convênios cadastrados para a empresa ativa.</p></div>
+    <a class="btn btn-primary" href="{% url 'convenio_novo' %}">Cadastrar convênio</a>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead><tr><th>Nome</th><th>Registro ANS</th><th>Contato</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody>
+        {% for convenio in convenios %}
+            <tr>
+                <td>{{ convenio.nome }}</td><td>{{ convenio.registro_ans|default:"—" }}</td>
+                <td>{{ convenio.telefone|default:convenio.email|default:"—" }}</td>
+                <td>{% if convenio.ativo %}Ativo{% else %}Inativo{% endif %}</td>
+                <td class="text-nowrap">
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'convenio_editar' convenio.pk %}">Editar</a>
+                    <a class="btn btn-sm btn-outline-danger" href="{% url 'convenio_excluir' convenio.pk %}">Excluir</a>
+                </td>
+            </tr>
+        {% empty %}<tr><td colspan="5" class="text-center py-4">Nenhum convênio cadastrado.</td></tr>{% endfor %}
+        </tbody>
+    </table>
+</div>
+<a class="btn btn-outline-secondary" href="{% url 'home' %}">Voltar</a>
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from django.contrib.auth import get_user_model
-from .models import Empresa
+from .models import Convenio, Empresa, Paciente
 
 User = get_user_model()
 
@@ -41,6 +41,23 @@ class EmpresaAdmin(admin.ModelAdmin):
     @admin.action(description="Suspender licenças selecionadas")
     def suspender_licencas(self, request, queryset):
         queryset.update(status_licenca=Empresa.StatusLicenca.SUSPENSA)
+
+
+@admin.register(Paciente)
+class PacienteAdmin(admin.ModelAdmin):
+    list_display = ("nome_completo", "cpf", "empresa", "usuario", "telefone", "whatsapp", "criado_em")
+    list_filter = ("empresa", "sexo", "estado")
+    search_fields = ("nome_completo", "cpf", "telefone", "whatsapp", "email")
+    list_select_related = ("empresa", "usuario")
+    readonly_fields = ("criado_em", "atualizado_em")
+
+
+@admin.register(Convenio)
+class ConvenioAdmin(admin.ModelAdmin):
+    list_display = ("nome", "empresa", "registro_ans", "telefone", "ativo")
+    list_filter = ("empresa", "ativo")
+    search_fields = ("nome", "registro_ans", "empresa__razao_social")
+    list_select_related = ("empresa",)
 try:
     admin.site.unregister(User)
 except admin.sites.NotRegistered:
@@ -51,12 +68,12 @@ except admin.sites.NotRegistered:
 class UserAdmin(DjangoUserAdmin):
     inlines = (EmpresaInline,)
     fieldsets = DjangoUserAdmin.fieldsets + (
-        ("Contato", {"fields": ("telefone", "whatsapp")}),
+        ("Contato", {"fields": ("cpf", "telefone", "whatsapp")}),
         ("Atuação profissional", {"fields": ("profissao",)}),
         ("Vínculo com a empresa", {"fields": ("empresa",)}),
     )
     add_fieldsets = DjangoUserAdmin.add_fieldsets + (
-        ("Contato", {"fields": ("telefone", "whatsapp")}),
+        ("Contato", {"fields": ("cpf", "telefone", "whatsapp")}),
         ("Atuação profissional", {"fields": ("profissao",)}),
         ("Vínculo com a empresa", {"fields": ("empresa",)}),
     )

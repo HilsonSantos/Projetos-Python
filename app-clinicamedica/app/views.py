@@ -13,8 +13,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from .forms import EmpresaCadastroForm, EsqueciSenhaForm, GrupoForm, LoginForm, PacienteCadastroForm, UsuarioCreateForm, UsuarioUpdateForm
-from .models import Empresa
+from .forms import ConvenioForm, EmpresaCadastroForm, EsqueciSenhaForm, GrupoForm, LoginForm, PacienteCadastroForm, UsuarioCreateForm, UsuarioUpdateForm
+from .models import Convenio, Empresa, Paciente
 from .whatsapp import enviar_link_redefinicao, WhatsAppNaoConfigurado, FalhaEnvioWhatsApp
 
 User = get_user_model()
@@ -129,25 +129,141 @@ def login_view(request):
 
 
 def cadastro_paciente(request):
-    form = PacienteCadastroForm(request.POST or None)
+    slug_empresa = request.session.get("empresa_slug")
+    empresa = Empresa.objects.filter(slug__iexact=slug_empresa).first() if slug_empresa else None
+    if empresa is None and request.session.get("empresa_id"):
+        empresa = Empresa.objects.filter(pk=request.session["empresa_id"]).first()
+    form = PacienteCadastroForm(request.POST or None, empresa=empresa)
     if form.is_valid():
-        slug_empresa = request.session.get("empresa_slug")
-        empresa = Empresa.objects.filter(slug__iexact=slug_empresa).first() if slug_empresa else None
-        if empresa is None and request.session.get("empresa_id"):
-            empresa = Empresa.objects.filter(pk=request.session["empresa_id"]).first()
         if empresa is None:
             form.add_error(None, "Informe o link da empresa antes de realizar o cadastro.")
             return render(request, "cadastro.html", {"form": form})
 
-        usuario = form.save(commit=False)
-        usuario.empresa = empresa
-        usuario.telefone = form.cleaned_data.get("telefone", "").strip()
-        usuario.whatsapp = form.cleaned_data.get("whatsapp", "").strip()
-        usuario.save()
+        paciente = form.save(commit=False)
+        paciente.empresa = empresa
+        paciente.save()
         request.session["empresa_id"] = empresa.pk
         request.session["empresa_slug"] = empresa.slug
-        return redirect("login")
+        return render(request, "cadastro_sucesso.html", {"paciente": paciente, "empresa": empresa})
     return render(request, "cadastro.html", {"form": form})
+
+
+def verificar_acesso_convenios(request):
+    return request.user.pode_gerenciar_usuarios_grupos
+
+
+@login_required
+def pacientes_lista(request):
+    if not verificar_acesso_convenios(request):
+        raise PermissionDenied
+    empresa_id = request.session.get("empresa_id")
+    busca = request.GET.get("busca", "").strip()
+    pacientes = Paciente.objects.filter(empresa_id=empresa_id) if empresa_id else Paciente.objects.none()
+    if busca:
+        pacientes = pacientes.filter(
+            Q(nome_completo__icontains=busca)
+            | Q(cpf__icontains=busca)
+            | Q(telefone__icontains=busca)
+            | Q(whatsapp__icontains=busca)
+        )
+    return render(request, "pacientes/lista.html", {"pacientes": pacientes.order_by("nome_completo"), "busca": busca})
+
+
+@login_required
+def paciente_novo(request):
+    if not verificar_acesso_convenios(request):
+        raise PermissionDenied
+    empresa = Empresa.objects.filter(pk=request.session.get("empresa_id")).first()
+    if empresa is None:
+        raise PermissionDenied("Selecione uma empresa antes de cadastrar pacientes.")
+    form = PacienteCadastroForm(request.POST or None, empresa=empresa)
+    if form.is_valid():
+        paciente = form.save(commit=False)
+        paciente.empresa = empresa
+        paciente.save()
+        return redirect("pacientes_lista")
+    return render(request, "pacientes/form.html", {"form": form, "titulo": "Cadastrar paciente"})
+
+
+@login_required
+def paciente_editar(request, pk):
+    if not verificar_acesso_convenios(request):
+        raise PermissionDenied
+    empresa_id = request.session.get("empresa_id")
+    paciente = get_object_or_404(Paciente, pk=pk, empresa_id=empresa_id)
+    empresa = Empresa.objects.filter(pk=empresa_id).first()
+    form = PacienteCadastroForm(request.POST or None, instance=paciente, empresa=empresa)
+    if form.is_valid():
+        form.save()
+        return redirect("pacientes_lista")
+    return render(request, "pacientes/form.html", {"form": form, "titulo": "Editar paciente", "paciente": paciente})
+
+
+@login_required
+def paciente_excluir(request, pk):
+    if not verificar_acesso_convenios(request):
+        raise PermissionDenied
+    paciente = get_object_or_404(Paciente, pk=pk, empresa_id=request.session.get("empresa_id"))
+    if request.method == "POST":
+        paciente.delete()
+        return redirect("pacientes_lista")
+    return render(request, "pacientes/excluir.html", {"paciente": paciente})
+
+
+@login_required
+def meus_dados_paciente(request):
+    if not request.user.is_paciente:
+        raise PermissionDenied
+    pacientes = request.user.cadastros_paciente.select_related("empresa", "convenio").all()
+    return render(request, "pacientes/meus_dados.html", {"pacientes": pacientes})
+
+
+@login_required
+def convenios_lista(request):
+    if not verificar_acesso_convenios(request):
+        raise PermissionDenied
+    empresa_id = request.session.get("empresa_id")
+    convenios = Convenio.objects.filter(empresa_id=empresa_id).order_by("nome") if empresa_id else Convenio.objects.none()
+    return render(request, "convenios/lista.html", {"convenios": convenios})
+
+
+@login_required
+def convenio_novo(request):
+    if not verificar_acesso_convenios(request):
+        raise PermissionDenied
+    empresa = Empresa.objects.filter(pk=request.session.get("empresa_id")).first()
+    if empresa is None:
+        raise PermissionDenied("Selecione uma empresa antes de cadastrar convênios.")
+    form = ConvenioForm(request.POST or None)
+    if form.is_valid():
+        convenio = form.save(commit=False)
+        convenio.empresa = empresa
+        convenio.save()
+        return redirect("convenios_lista")
+    return render(request, "convenios/form.html", {"form": form, "titulo": "Cadastrar convênio"})
+
+
+@login_required
+def convenio_editar(request, pk):
+    if not verificar_acesso_convenios(request):
+        raise PermissionDenied
+    convenio = get_object_or_404(Convenio, pk=pk, empresa_id=request.session.get("empresa_id"))
+    form = ConvenioForm(request.POST or None, instance=convenio)
+    if form.is_valid():
+        form.save()
+        return redirect("convenios_lista")
+    return render(request, "convenios/form.html", {"form": form, "titulo": "Editar convênio"})
+
+
+@login_required
+def convenio_excluir(request, pk):
+    if not verificar_acesso_convenios(request):
+        raise PermissionDenied
+    convenio = get_object_or_404(Convenio, pk=pk, empresa_id=request.session.get("empresa_id"))
+    if request.method == "POST":
+        convenio.delete()
+        return redirect("convenios_lista")
+    return render(request, "convenios/excluir.html", {"convenio": convenio})
 
 
 def logout_view(request):

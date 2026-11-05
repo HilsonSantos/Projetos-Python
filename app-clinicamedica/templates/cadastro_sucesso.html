@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-12 col-md-8 col-lg-6">
+    <div class="card card-body text-center">
+        <div class="display-6 text-success mb-2" aria-hidden="true">✓</div>
+        <h1 class="h3">Cadastro realizado</h1>
+        <p>O cadastro de <strong>{{ paciente.nome_completo }}</strong> foi registrado em {{ empresa.razao_social }}.</p>
+        <a class="btn btn-primary align-self-center" href="{% url 'home' %}">Voltar ao início</a>
+    </div>
+</div></div>
+{% endblock %}

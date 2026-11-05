@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Meus dados | Clínica Médica{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Meus dados de paciente</h1>
+{% for paciente in pacientes %}
+<div class="card patient-form-card card-body mb-4">
+    <h2 class="h5">{{ paciente.empresa.nome_fantasia|default:paciente.empresa.razao_social }}</h2>
+    <dl class="row mb-0">
+        <dt class="col-sm-4">Nome completo</dt><dd class="col-sm-8">{{ paciente.nome_completo }}</dd>
+        <dt class="col-sm-4">CPF</dt><dd class="col-sm-8">{{ paciente.cpf }}</dd>
+        <dt class="col-sm-4">Data de nascimento</dt><dd class="col-sm-8">{{ paciente.data_nascimento|date:"d/m/Y" }}</dd>
+        <dt class="col-sm-4">Telefone</dt><dd class="col-sm-8">{{ paciente.telefone }}</dd>
+        <dt class="col-sm-4">WhatsApp</dt><dd class="col-sm-8">{{ paciente.whatsapp|default:"—" }}</dd>
+        <dt class="col-sm-4">E-mail</dt><dd class="col-sm-8">{{ paciente.email|default:"—" }}</dd>
+        <dt class="col-sm-4">Endereço</dt><dd class="col-sm-8">{{ paciente.logradouro }}, {{ paciente.numero }} — {{ paciente.bairro }}, {{ paciente.cidade }}/{{ paciente.estado }}</dd>
+        <dt class="col-sm-4">Convênio</dt><dd class="col-sm-8">{{ paciente.convenio|default:"Particular / não informado" }}</dd>
+    </dl>
+</div>
+{% empty %}
+<div class="alert alert-info">Não encontramos cadastro vinculado a esta conta. Peça à clínica para associar seu CPF ou e-mail.</div>
+{% endfor %}
+<a class="btn btn-outline-secondary" href="{% url 'home' %}">Voltar</a>
+{% endblock %}

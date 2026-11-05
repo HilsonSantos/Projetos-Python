@@ -20,6 +20,15 @@ from .views import (
     empresa_editar,
     empresa_excluir,
     esqueci_senha,
+    convenios_lista,
+    convenio_novo,
+    convenio_editar,
+    convenio_excluir,
+    pacientes_lista,
+    paciente_novo,
+    paciente_editar,
+    paciente_excluir,
+    meus_dados_paciente,
 )
 
 urlpatterns = [
@@ -40,7 +49,6 @@ urlpatterns = [
     path("empresas/cadastro/", empresa_nova, name="empresa_nova"),
     path("empresas/<int:pk>/editar/", empresa_editar, name="empresa_editar"),
     path("empresas/<int:pk>/excluir/", empresa_excluir, name="empresa_excluir"),
-    path("<str:slug>/", empresa_acesso, name="empresa_acesso"),
     path("grupos/", grupos_lista, name="grupos_lista"),
     path("grupos/novo/", grupo_novo, name="grupo_novo"),
     path("grupos/<int:pk>/editar/", grupo_editar, name="grupo_editar"),
@@ -49,4 +57,14 @@ urlpatterns = [
     path("usuarios/novo/", usuario_novo, name="usuario_novo"),
     path("usuarios/<int:pk>/editar/", usuario_editar, name="usuario_editar"),
     path("usuarios/<int:pk>/excluir/", usuario_excluir, name="usuario_excluir"),
+    path("convenios/", convenios_lista, name="convenios_lista"),
+    path("convenios/cadastro/", convenio_novo, name="convenio_novo"),
+    path("convenios/<int:pk>/editar/", convenio_editar, name="convenio_editar"),
+    path("convenios/<int:pk>/excluir/", convenio_excluir, name="convenio_excluir"),
+    path("pacientes/", pacientes_lista, name="pacientes_lista"),
+    path("pacientes/cadastro/", paciente_novo, name="paciente_novo"),
+    path("pacientes/<int:pk>/editar/", paciente_editar, name="paciente_editar"),
+    path("pacientes/<int:pk>/excluir/", paciente_excluir, name="paciente_excluir"),
+    path("meus-dados/", meus_dados_paciente, name="meus_dados_paciente"),
+    path("<str:slug>/", empresa_acesso, name="empresa_acesso"),
 ]

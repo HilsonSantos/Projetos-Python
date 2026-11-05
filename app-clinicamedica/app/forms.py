@@ -3,7 +3,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Empresa
+from django.db.models import Q
+import re
+from .models import Convenio, Empresa, Paciente
 
 User = get_user_model()
 
@@ -44,26 +46,48 @@ class EmpresaCadastroForm(forms.ModelForm):
             field.widget.attrs["class"] = "form-control"
 
 
-class PacienteCadastroForm(UserCreationForm):
+class ConvenioForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ("username", "first_name", "last_name", "email", "telefone", "whatsapp")
-        labels = {"username": "Usuário", "first_name": "Nome", "last_name": "Sobrenome", "email": "E-mail", "telefone": "Telefone", "whatsapp": "WhatsApp"}
+        model = Convenio
+        fields = ("nome", "registro_ans", "telefone", "email", "observacoes", "ativo")
+        widgets = {"observacoes": forms.Textarea(attrs={"rows": 3})}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
+            field.widget.attrs["class"] = "form-check-input" if isinstance(field.widget, forms.CheckboxInput) else "form-control"
+
+
+class PacienteCadastroForm(forms.ModelForm):
+    def __init__(self, *args, empresa=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        convenios = Convenio.objects.filter(empresa=empresa, ativo=True) if empresa else Convenio.objects.none()
+        if self.instance.pk and self.instance.convenio_id:
+            convenios = Convenio.objects.filter(
+                Q(empresa=empresa, ativo=True) | Q(pk=self.instance.convenio_id)
+            )
+        self.fields["convenio"].queryset = convenios
+        for field in self.fields.values():
             field.widget.attrs["class"] = "form-control"
 
-    def save(self, commit=True):
-        usuario = super().save(commit=False)
-        usuario.tipo = User.Tipo.PACIENTE
-        usuario.is_staff = False
-        usuario.is_superuser = False
-        if commit:
-            usuario.save()
-        return usuario
+    def clean_cpf(self):
+        cpf = re.sub(r"\D", "", self.cleaned_data.get("cpf", ""))
+        if len(cpf) != 11:
+            raise forms.ValidationError("Informe um CPF com 11 dígitos.")
+        return cpf
 
+    class Meta:
+        model = Paciente
+        fields = (
+            "nome_completo", "cpf", "data_nascimento", "sexo", "telefone", "whatsapp", "email",
+            "cep", "logradouro", "numero", "complemento", "bairro", "cidade", "estado",
+            "contato_emergencia_nome", "contato_emergencia_telefone", "convenio", "numero_carteirinha",
+            "observacoes",
+        )
+        widgets = {
+            "data_nascimento": forms.DateInput(attrs={"type": "date"}),
+            "observacoes": forms.Textarea(attrs={"rows": 3}),
+        }
 
 def rotulo_permissao(permissao):
     acoes = {
@@ -111,12 +135,22 @@ class UsuarioCreateForm(UserCreationForm):
             self.add_error("empresa", "Informe a empresa para este tipo de usuário.")
         if cleaned_data.get("tipo") == User.Tipo.COLABORADOR and not cleaned_data.get("profissao"):
             self.add_error("profissao", "Informe o tipo de profissional do colaborador.")
+        if cleaned_data.get("tipo") == User.Tipo.PACIENTE and not (
+            cleaned_data.get("cpf") or cleaned_data.get("email")
+        ):
+            self.add_error("cpf", "Informe o CPF ou e-mail para vincular o cadastro do paciente.")
         return cleaned_data
+
+    def clean_cpf(self):
+        cpf = re.sub(r"\D", "", self.cleaned_data.get("cpf", ""))
+        if cpf and len(cpf) != 11:
+            raise forms.ValidationError("Informe um CPF com 11 dígitos.")
+        return cpf or None
 
     class Meta:
         model = User
         fields = (
-            "username", "first_name", "last_name", "email", "telefone", "whatsapp", "tipo", "profissao", "empresa", "is_active",
+            "username", "first_name", "last_name", "email", "cpf", "telefone", "whatsapp", "tipo", "profissao", "empresa", "is_active",
             "is_staff", "is_superuser", "groups", "user_permissions",
         )
 
@@ -128,7 +162,7 @@ class UsuarioUpdateForm(forms.ModelForm):
     class Meta:
         model = User
         fields = (
-            "username", "first_name", "last_name", "email", "telefone", "whatsapp", "tipo", "profissao", "empresa", "is_active",
+            "username", "first_name", "last_name", "email", "cpf", "telefone", "whatsapp", "tipo", "profissao", "empresa", "is_active",
             "is_staff", "is_superuser", "groups", "user_permissions",
         )
 
@@ -155,11 +189,21 @@ class UsuarioUpdateForm(forms.ModelForm):
             self.add_error("empresa", "Informe a empresa para este tipo de usuário.")
         if cleaned_data.get("tipo") == User.Tipo.COLABORADOR and not cleaned_data.get("profissao"):
             self.add_error("profissao", "Informe o tipo de profissional do colaborador.")
+        if cleaned_data.get("tipo") == User.Tipo.PACIENTE and not (
+            cleaned_data.get("cpf") or cleaned_data.get("email")
+        ):
+            self.add_error("cpf", "Informe o CPF ou e-mail para vincular o cadastro do paciente.")
         senha = cleaned_data.get("nova_senha")
         confirmacao = cleaned_data.get("confirmar_senha")
         if senha != confirmacao:
             self.add_error("confirmar_senha", "As senhas não conferem.")
         return cleaned_data
+
+    def clean_cpf(self):
+        cpf = re.sub(r"\D", "", self.cleaned_data.get("cpf", ""))
+        if cpf and len(cpf) != 11:
+            raise forms.ValidationError("Informe um CPF com 11 dígitos.")
+        return cpf or None
 
     def save(self, commit=True):
         usuario = super().save(commit=False)

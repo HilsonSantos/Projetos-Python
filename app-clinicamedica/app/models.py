@@ -2,6 +2,7 @@ import hashlib
 import re
 import uuid
 import unicodedata
+from django.db.models import Q
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -52,6 +53,7 @@ class Usuario(AbstractUser):
         blank=True,
         verbose_name="empresa",
     )
+    cpf = models.CharField("CPF", max_length=14, unique=True, null=True, blank=True)
     telefone = models.CharField("telefone", max_length=20, blank=True)
     whatsapp = models.CharField("WhatsApp", max_length=20, blank=True)
     profissao = models.CharField("tipo de profissional", max_length=10, choices=Profissao.choices, blank=True)
@@ -68,6 +70,12 @@ class Usuario(AbstractUser):
     @property
     def is_paciente(self):
         return self.tipo == self.Tipo.PACIENTE
+
+    def save(self, *args, **kwargs):
+        self.cpf = re.sub(r"\D", "", self.cpf or "") or None
+        super().save(*args, **kwargs)
+        if self.tipo == self.Tipo.PACIENTE:
+            vincular_usuario_a_paciente(self)
 
     @property
     def pode_gerenciar_usuarios_grupos(self):
@@ -165,3 +173,125 @@ class Empresa(models.Model):
 
     def __str__(self):
         return self.nome_fantasia or self.razao_social
+
+
+class Paciente(models.Model):
+    class Sexo(models.TextChoices):
+        FEMININO = "F", "Feminino"
+        MASCULINO = "M", "Masculino"
+        OUTRO = "O", "Outro"
+        NAO_INFORMADO = "N", "Prefiro não informar"
+
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name="pacientes")
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="cadastros_paciente",
+        null=True,
+        blank=True,
+        verbose_name="conta de acesso",
+    )
+    nome_completo = models.CharField("nome completo", max_length=200)
+    cpf = models.CharField("CPF", max_length=14)
+    data_nascimento = models.DateField("data de nascimento")
+    sexo = models.CharField("sexo", max_length=1, choices=Sexo.choices, blank=True)
+    telefone = models.CharField("telefone", max_length=20)
+    whatsapp = models.CharField("WhatsApp", max_length=20, blank=True)
+    email = models.EmailField("e-mail", blank=True)
+    cep = models.CharField("CEP", max_length=9)
+    logradouro = models.CharField("logradouro", max_length=150)
+    numero = models.CharField("número", max_length=20)
+    complemento = models.CharField("complemento", max_length=100, blank=True)
+    bairro = models.CharField("bairro", max_length=100)
+    cidade = models.CharField("cidade", max_length=100)
+    estado = models.CharField("UF", max_length=2)
+    contato_emergencia_nome = models.CharField("nome do contato de emergência", max_length=150, blank=True)
+    contato_emergencia_telefone = models.CharField("telefone de emergência", max_length=20, blank=True)
+    convenio = models.ForeignKey(
+        "Convenio",
+        on_delete=models.SET_NULL,
+        related_name="pacientes",
+        null=True,
+        blank=True,
+        verbose_name="convênio",
+    )
+    numero_carteirinha = models.CharField("número da carteirinha", max_length=50, blank=True)
+    observacoes = models.TextField("observações", blank=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "pacientes"
+        ordering = ["nome_completo"]
+        constraints = [
+            models.UniqueConstraint(fields=["empresa", "cpf"], name="uniq_paciente_cpf_empresa"),
+        ]
+        verbose_name = "paciente"
+        verbose_name_plural = "pacientes"
+
+    def __str__(self):
+        return self.nome_completo
+
+    def save(self, *args, **kwargs):
+        self.cpf = re.sub(r"\D", "", self.cpf or "")
+        super().save(*args, **kwargs)
+        if not self.usuario_id:
+            vincular_paciente_a_usuario(self)
+
+
+class Convenio(models.Model):
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name="convenios")
+    nome = models.CharField("nome do convênio", max_length=150)
+    registro_ans = models.CharField("registro ANS", max_length=20, blank=True)
+    telefone = models.CharField("telefone de contato", max_length=20, blank=True)
+    email = models.EmailField("e-mail de contato", blank=True)
+    observacoes = models.TextField("cobertura e observações", blank=True)
+    ativo = models.BooleanField("ativo", default=True)
+    criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "convenios"
+        ordering = ["nome"]
+        constraints = [
+            models.UniqueConstraint(fields=["empresa", "nome"], name="uniq_convenio_nome_empresa"),
+        ]
+        verbose_name = "convênio"
+        verbose_name_plural = "convênios"
+
+    def __str__(self):
+        return self.nome
+
+
+def vincular_usuario_a_paciente(usuario):
+    if not usuario.empresa_id or not (usuario.cpf or usuario.email):
+        return
+    candidatos = Paciente.objects.filter(empresa_id=usuario.empresa_id, usuario__isnull=True)
+    correspondencias = Q()
+    if usuario.cpf:
+        correspondencias |= Q(cpf=usuario.cpf)
+    if usuario.email:
+        correspondencias |= Q(email__iexact=usuario.email)
+    ids = list(candidatos.filter(correspondencias).values_list("pk", flat=True)[:2])
+    if len(ids) == 1:
+        Paciente.objects.filter(pk=ids[0], usuario__isnull=True).update(usuario_id=usuario.pk)
+
+
+def vincular_paciente_a_usuario(paciente):
+    correspondencias = Q()
+    if paciente.cpf:
+        correspondencias |= Q(cpf=paciente.cpf)
+    if paciente.email:
+        correspondencias |= Q(email__iexact=paciente.email)
+    if not correspondencias:
+        return
+    candidatos = Usuario.objects.filter(
+        empresa_id=paciente.empresa_id,
+        tipo=Usuario.Tipo.PACIENTE,
+    ).filter(correspondencias)
+    ids = [
+        usuario.pk for usuario in candidatos
+        if not usuario.cadastros_paciente.filter(empresa_id=paciente.empresa_id).exists()
+    ][:2]
+    if len(ids) == 1:
+        Paciente.objects.filter(pk=paciente.pk, usuario__isnull=True).update(usuario_id=ids[0])
