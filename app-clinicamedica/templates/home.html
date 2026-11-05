@@ -1,13 +1,15 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Início | Clínica Médica{% endblock %}
-
 {% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary shadow-sm mb-4">
-    <div class="container d-flex">
-        <a class="navbar-brand fw-semibold" href="{% url 'home' %}">Clínica Médica</a>
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+            <img src="{% static 'img/logo-sistema.png' %}" width="40" height="40" alt="Logo">
+            <span class="fw-semibold">Clínica Médica</span>
+        </a>
         <div class="d-flex align-items-center gap-3 ms-auto">
-            <span class="navbar-text text-end">{{ user.get_full_name|default:user.username }}</span>
+            <span class="navbar-text">{{ user.get_full_name|default:user.username }}</span>
             <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}">Sair</a>
         </div>
     </div>

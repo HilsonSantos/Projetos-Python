@@ -4,6 +4,10 @@
     <h1 class="h4">Excluir convênio</h1>
     <p>Confirma a exclusão de <strong>{{ convenio.nome }}</strong>?</p>
     <p>Pacientes vinculados permanecerão cadastrados sem convênio associado.</p>
-    <form method="post" class="d-flex gap-2">{% csrf_token %}<button class="btn btn-danger" type="submit">Confirmar exclusão</button><a class="btn btn-outline-secondary" href="{% url 'convenios_lista' %}">Cancelar</a></form>
+    <form method="post" class="d-flex gap-2">
+        {% csrf_token %}
+        <button class="btn btn-danger" type="submit">Confirmar exclusão</button>
+        <a class="btn btn-outline-secondary" href="{% url 'convenios_lista' %}">Cancelar</a>
+    </form>
 </div>
 {% endblock %}

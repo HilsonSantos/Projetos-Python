@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %} {{ titulo }} {% endblock %}
 {% block content %}
-    <h1>{{ titulo }}</h1>
+    <h1 class="h3 mb-4">{{ titulo }}</h1>
     <form method="post">
         {% csrf_token %}
         {% if form.non_field_errors %}

@@ -2,12 +2,23 @@
 {% block title %}Convênios | Clínica Médica{% endblock %}
 {% block content %}
 <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
-    <div><h1 class="h3 mb-1">Convênios</h1><p class="text-body-secondary mb-0">Convênios cadastrados para a empresa ativa.</p></div>
+    <div>
+        <h1 class="h3 mb-1">Convênios</h1>
+        <p class="text-body-secondary mb-0">Convênios cadastrados para a empresa ativa.</p>
+    </div>
     <a class="btn btn-primary" href="{% url 'convenio_novo' %}">Cadastrar convênio</a>
 </div>
 <div class="table-responsive">
     <table class="table table-striped table-hover align-middle">
-        <thead><tr><th>Nome</th><th>Registro ANS</th><th>Contato</th><th>Status</th><th>Ações</th></tr></thead>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Registro ANS</th>
+                <th>Contato</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
         <tbody>
         {% for convenio in convenios %}
             <tr>

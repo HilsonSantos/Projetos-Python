@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block main_class %}min-vh-100 d-flex align-items-center justify-content-center{% endblock %}
 {% block navbar %}{% endblock %}
 {% block content %}
@@ -6,10 +7,11 @@
         <div class="col-12 col-md-8 col-lg-5">
             <div class="card border-0 shadow-sm">
                 <div class="card-body p-4 p-md-5 bg-body-tertiary border border-secondary rounded shadow-sm">
-                    <div class="text-center mb-4">
-                        <h1 class="h3 mb-2">Criar conta de acesso</h1>
-                        <p class="text-body-secondary mb-0">Informe seus dados para localizar seu cadastro e criar uma senha.</p>
+                    <div class="text-center mb-3">
+                        <img src="{% static 'img/logo-sistema.png' %}" width="64" height="64" class="mb-1" alt="Logo">
+                        <h1 class="h3 mb-0">Clínica Médica</h1>
                     </div>
+                    <p class="text-body-secondary mb-4 text-center">Informe seus dados para localizar seu cadastro e criar uma senha.</p>
 
                     {% if form.non_field_errors %}
                         <div class="alert alert-danger" role="alert">

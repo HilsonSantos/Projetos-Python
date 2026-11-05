@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="pt-BR" data-bs-theme="dark">
     <head>
         <meta charset="UTF-8">
@@ -29,7 +30,10 @@
             {% block navbar %}
             <nav class="navbar navbar-dark bg-dark border-bottom border-secondary mb-4">
                 <div class="container">
-                    <a class="navbar-brand" href="{% url 'home' %}">Clínica Médica</a>
+                    <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+                        <img src="{% static 'img/logo-sistema.png' %}" width="40" height="40" alt="Logo">
+                        <span class="fw-semibold">Clínica Médica</span>
+                    </a>
                 </div>
             </nav>
             {% endblock %}
