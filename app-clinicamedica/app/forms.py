@@ -9,12 +9,78 @@ from .models import Convenio, Empresa, Paciente
 
 User = get_user_model()
 
-class LoginForm(AuthenticationForm):
+class LoginForm(forms.Form):
+    """Formulário de login personalizado que aceita CPF, email ou username."""
     empresa = forms.CharField(
         label="Link ou identificador da empresa",
         required=True,
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "clinicamedica0001"}),
     )
+    username = forms.CharField(
+        label="CPF, e-mail ou usuário",
+        required=True,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+    )
+    password = forms.CharField(
+        label="Senha",
+        required=True,
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+    )
+
+    user_cache = None
+
+    def __init__(self, request=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.request = request
+
+    def clean(self):
+        """Valida empresa, username e password, buscando usuário por CPF, email ou username."""
+        cleaned_data = self.cleaned_data.copy()
+
+        valor_empresa = cleaned_data.get("empresa", "").strip()
+        username = cleaned_data.get("username", "").strip()
+        password = cleaned_data.get("password", "")
+
+        # Validar campos obrigatórios
+        if not valor_empresa:
+            self.add_error("empresa", "Informe o link ou identificador da empresa.")
+        if not username:
+            self.add_error("username", "Informe o CPF, e-mail ou nome de usuário.")
+        if not password:
+            self.add_error("password", "Informe a senha.")
+
+        # Se já há erros, retorna early
+        if self.errors:
+            return cleaned_data
+
+        # Buscar usuário por CPF, email ou username
+        cpf_clean = re.sub(r"\D", "", username)
+
+        user = None
+        if len(cpf_clean) == 11:
+            user = User.objects.filter(cpf=cpf_clean).first()
+        elif "@" in username:
+            user = User.objects.filter(email__iexact=username).first()
+
+        if user is None:
+            user = User.objects.filter(username__iexact=username).first()
+
+        if user is None:
+            raise forms.ValidationError(
+                "Por favor, entre com um usuário e senha corretos. Note que ambos os campos diferenciam maiúsculas e minúsculas."
+            )
+
+        if not user.check_password(password):
+            raise forms.ValidationError(
+                "Por favor, entre com um usuário e senha corretos. Note que ambos os campos diferenciam maiúsculas e minúsculas."
+            )
+
+        self.user_cache = user
+        return cleaned_data
+
+    def get_user(self):
+        """Retorna o usuário autenticado."""
+        return self.user_cache
 
 
 class EsqueciSenhaForm(forms.Form):
@@ -23,6 +89,51 @@ class EsqueciSenhaForm(forms.Form):
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "clinicamedica0001"}),
     )
     username = forms.CharField(label="Usuário", widget=forms.TextInput(attrs={"class": "form-control"}))
+
+
+class CriarSenhaPacienteForm(forms.Form):
+    """Formulário para pacientes já cadastrados criarem uma conta de acesso."""
+    cpf = forms.CharField(
+        label="CPF",
+        required=False,
+        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "000.000.000-00"}),
+    )
+    email = forms.EmailField(
+        label="E-mail",
+        required=False,
+        widget=forms.EmailInput(attrs={"class": "form-control", "placeholder": "seu@email.com"}),
+    )
+    senha = forms.CharField(
+        label="Senha",
+        required=True,
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        help_text="Mínimo de 8 caracteres.",
+    )
+    confirmar_senha = forms.CharField(
+        label="Confirmar senha",
+        required=True,
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+    )
+
+    def clean_cpf(self):
+        cpf = re.sub(r"\D", "", self.cleaned_data.get("cpf", ""))
+        if cpf and len(cpf) != 11:
+            raise forms.ValidationError("Informe um CPF com 11 dígitos.")
+        return cpf or None
+
+    def clean(self):
+        cleaned_data = super().clean()
+        cpf = cleaned_data.get("cpf")
+        email = cleaned_data.get("email")
+        if not cpf and not email:
+            self.add_error(None, "Informe o CPF ou o e-mail para localizar seu cadastro.")
+        senha = cleaned_data.get("senha")
+        confirmar = cleaned_data.get("confirmar_senha")
+        if senha and confirmar and senha != confirmar:
+            self.add_error("confirmar_senha", "As senhas não coincidem.")
+        if senha and len(senha) < 8:
+            self.add_error("senha", "A senha deve ter pelo menos 8 caracteres.")
+        return cleaned_data
 
 
 class EmpresaCadastroForm(forms.ModelForm):
@@ -59,14 +170,30 @@ class ConvenioForm(forms.ModelForm):
 
 
 class PacienteCadastroForm(forms.ModelForm):
-    def __init__(self, *args, empresa=None, **kwargs):
+    senha = forms.CharField(
+        label="Senha",
+        required=False,
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+        help_text="Crie uma senha para acessar sua conta.",
+    )
+    confirmar_senha = forms.CharField(
+        label="Confirmar senha",
+        required=False,
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+    )
+
+    def __init__(self, *args, empresa=None, criar_usuario=False, **kwargs):
         super().__init__(*args, **kwargs)
+        self.criar_usuario = criar_usuario
         convenios = Convenio.objects.filter(empresa=empresa, ativo=True) if empresa else Convenio.objects.none()
         if self.instance.pk and self.instance.convenio_id:
             convenios = Convenio.objects.filter(
                 Q(empresa=empresa, ativo=True) | Q(pk=self.instance.convenio_id)
             )
         self.fields["convenio"].queryset = convenios
+        if criar_usuario:
+            self.fields["senha"].required = True
+            self.fields["confirmar_senha"].required = True
         for field in self.fields.values():
             field.widget.attrs["class"] = "form-control"
 
@@ -75,6 +202,17 @@ class PacienteCadastroForm(forms.ModelForm):
         if len(cpf) != 11:
             raise forms.ValidationError("Informe um CPF com 11 dígitos.")
         return cpf
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if self.criar_usuario:
+            senha = cleaned_data.get("senha")
+            confirmar = cleaned_data.get("confirmar_senha")
+            if senha and confirmar and senha != confirmar:
+                self.add_error("confirmar_senha", "As senhas não coincidem.")
+            if senha and len(senha) < 8:
+                self.add_error("senha", "A senha deve ter pelo menos 8 caracteres.")
+        return cleaned_data
 
     class Meta:
         model = Paciente

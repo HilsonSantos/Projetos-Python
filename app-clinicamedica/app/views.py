@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from .forms import ConvenioForm, EmpresaCadastroForm, EsqueciSenhaForm, GrupoForm, LoginForm, PacienteCadastroForm, UsuarioCreateForm, UsuarioUpdateForm
+from .forms import ConvenioForm, CriarSenhaPacienteForm, EmpresaCadastroForm, EsqueciSenhaForm, GrupoForm, LoginForm, PacienteCadastroForm, UsuarioCreateForm, UsuarioUpdateForm
 from .models import Convenio, Empresa, Paciente
 from .whatsapp import enviar_link_redefinicao, WhatsAppNaoConfigurado, FalhaEnvioWhatsApp
 
@@ -70,12 +70,7 @@ def home(request):
             .first()
         )
 
-        if (
-            empresa
-            and not usuario_e_dono_app(request.user)
-            and request.user.empresa_id != empresa.pk
-            and empresa.usuario_id != request.user.pk
-        ):
+        if empresa and not usuario_e_dono_app(request.user) and request.user.empresa_id != empresa.pk and empresa.usuario_id != request.user.pk:
             request.session.pop("empresa_id", None)
             request.session.pop("empresa_hash", None)
             request.session.pop("empresa_slug", None)
@@ -142,10 +137,110 @@ def cadastro_paciente(request):
         paciente = form.save(commit=False)
         paciente.empresa = empresa
         paciente.save()
+
         request.session["empresa_id"] = empresa.pk
         request.session["empresa_slug"] = empresa.slug
         return render(request, "cadastro_sucesso.html", {"paciente": paciente, "empresa": empresa})
     return render(request, "cadastro.html", {"form": form})
+
+
+def criar_senha_paciente(request):
+    """Permite que um paciente já cadastrado crie uma conta de acesso com senha."""
+    from django.contrib.auth import login as auth_login
+
+    slug_empresa = request.session.get("empresa_slug")
+    empresa = Empresa.objects.filter(slug__iexact=slug_empresa).first() if slug_empresa else None
+    if empresa is None and request.session.get("empresa_id"):
+        empresa = Empresa.objects.filter(pk=request.session["empresa_id"]).first()
+
+    form = CriarSenhaPacienteForm(request.POST or None)
+    if form.is_valid():
+        if empresa is None:
+            form.add_error(None, "Informe o link da empresa antes de criar sua conta de acesso.")
+            return render(
+                request,
+                "criar_senha.html",
+                {"form": form}
+            )
+
+        cpf = form.cleaned_data.get("cpf")
+        email = form.cleaned_data.get("email")
+        senha = form.cleaned_data.get("senha")
+
+        # Localizar paciente existente por CPF ou email
+        correspondencias = Q()
+        if cpf:
+            correspondencias |= Q(cpf=cpf)
+        if email:
+            correspondencias |= Q(email__iexact=email)
+
+        paciente = Paciente.objects.filter(empresa=empresa).filter(correspondencias).first()
+
+        if paciente is None:
+            form.add_error(None, "Não encontramos um cadastro com esse CPF ou e-mail. Verifique os dados ou entre em contato com a clínica.")
+            return render(request, "criar_senha.html", {"form": form})
+
+        # Verificar se já tem conta de acesso
+        if paciente.usuario_id:
+            form.add_error(None, "Este cadastro já possui uma conta de acesso. Tente fazer login ou use a opção 'Esqueci minha senha'.")
+            return render(request, "criar_senha.html", {"form": form})
+
+        # Verificar se já existe outro usuário com este CPF ou email
+        existing_user = None
+        if cpf:
+            existing_user = User.objects.filter(cpf=cpf, tipo=User.Tipo.PACIENTE).first()
+        if not existing_user and email:
+            existing_user = User.objects.filter(email=email, tipo=User.Tipo.PACIENTE).first()
+
+        if existing_user:
+            # Vincular paciente ao usuário existente e definir a senha
+            existing_user.set_password(senha)
+            existing_user.empresa = empresa
+            existing_user.save()
+            paciente.usuario = existing_user
+            paciente.save()
+            usuario = existing_user
+        else:
+            # Criar novo usuário para o paciente
+            nome_completo = paciente.nome_completo
+            if paciente.email:
+                username = paciente.email
+            else:
+                base_username = re.sub(r"[^a-zA-Z0-9]", "", nome_completo.lower())
+                username = base_username[:30]
+                counter = 1
+                original_username = username
+                while User.objects.filter(username=username).exists():
+                    username = f"{original_username}{counter}"
+                    counter += 1
+
+            usuario = User.objects.create_user(
+                username=username,
+                email=paciente.email,
+                password=senha,
+                tipo=User.Tipo.PACIENTE,
+                empresa=empresa,
+                cpf=paciente.cpf,
+                first_name=nome_completo.split()[0] if nome_completo else "",
+                last_name=" ".join(nome_completo.split()[1:]) if len(nome_completo.split()) > 1 else "",
+                telefone=paciente.telefone,
+                whatsapp=paciente.whatsapp,
+            )
+            paciente.usuario = usuario
+            paciente.save()
+
+        request.session["empresa_id"] = empresa.pk
+        request.session["empresa_slug"] = empresa.slug
+
+        # Fazer login automático
+        auth_login(request, usuario)
+        return redirect("home")
+
+    return render(
+        request,
+        "criar_senha.html",
+        {"form": form}
+    )
 
 
 def verificar_acesso_convenios(request):
